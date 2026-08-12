@@ -1,0 +1,61 @@
+"use client";
+
+import Link from "next/link";
+
+import { useReservation } from "@/components/site/SiteShell";
+import { Button } from "@/components/ui/button";
+import type { Product } from "@/lib/catalog-types";
+
+export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
+  const { openReservation } = useReservation();
+
+  return (
+    <article className="flex h-full flex-col rounded-3xl border border-border bg-background p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+      <Link
+        href={`/collection/${product.id}`}
+        className="relative overflow-hidden rounded-2xl bg-muted"
+      >
+        {badge ? (
+          <span className="absolute top-3 right-3 z-10 rounded-full bg-white px-3 py-1 text-[0.65rem] font-semibold tracking-[0.08em] text-foreground uppercase shadow-sm">
+            {badge}
+          </span>
+        ) : null}
+        <img
+          src={product.image}
+          alt={`${product.name} — ${product.fabric}`}
+          width={800}
+          height={1000}
+          className="aspect-[4/5] w-full object-cover object-top transition-transform duration-700 hover:scale-105"
+        />
+      </Link>
+
+      <div className="mt-4 flex flex-1 flex-col">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-lg font-bold leading-snug">
+            <Link href={`/collection/${product.id}`} className="hover:text-teal">
+              {product.name}
+            </Link>
+          </h3>
+          <p className="shrink-0 text-sm font-semibold text-teal">{product.price}</p>
+        </div>
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+          {product.tagline}
+        </p>
+        <div className="mt-5 grid gap-2">
+          <Button
+            onClick={() => openReservation(product)}
+            className="h-11 w-full rounded-full bg-teal text-xs font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90"
+          >
+            Reserve Interest
+          </Button>
+          <Link
+            href={`/collection/${product.id}`}
+            className="inline-flex h-10 items-center justify-center rounded-full border border-border text-xs font-semibold tracking-[0.12em] uppercase transition-colors hover:bg-muted"
+          >
+            View Details
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
