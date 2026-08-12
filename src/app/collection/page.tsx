@@ -44,7 +44,7 @@ export default async function CollectionPage() {
         <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product, index) => (
             <Reveal key={product.id} delay={index * 50}>
-              <ProductCard product={product} badge={product.badge || undefined} />
+              <ProductCard product={product} />
             </Reveal>
           ))}
         </div>

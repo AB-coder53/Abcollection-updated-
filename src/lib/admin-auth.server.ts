@@ -17,9 +17,9 @@ function cleanEnv(value: string | undefined, fallback: string) {
 
 function getCredentials() {
   return {
-    username: cleanEnv(process.env.ADMIN_USERNAME, "Abbass Badwahwala"),
-    password: cleanEnv(process.env.ADMIN_PASSWORD, "Abbass@786"),
-    secret: cleanEnv(process.env.ADMIN_SESSION_SECRET, "ab-collection-admin-dev-secret"),
+    username: cleanEnv(process.env["ADMIN_USERNAME"], "Abbass Badwahwala"),
+    password: cleanEnv(process.env["ADMIN_PASSWORD"], "Abbass@786"),
+    secret: cleanEnv(process.env["ADMIN_SESSION_SECRET"], "ab-collection-admin-dev-secret"),
   };
 }
 

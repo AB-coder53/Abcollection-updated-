@@ -153,7 +153,7 @@ export function HomeFeatured({ products }: { products: Product[] }) {
       <div className="mx-auto mt-14 grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((product, index) => (
           <Reveal key={product.id} delay={index * 60}>
-            <ProductCard product={product} badge={product.badge || undefined} />
+            <ProductCard product={product} />
           </Reveal>
         ))}
       </div>

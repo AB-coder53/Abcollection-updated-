@@ -42,11 +42,11 @@ function createClientWithKey(url: string, key: string): SupabaseClient<Database>
 
 /** Public read client (publishable key). Safe for storefront SELECTs with RLS. */
 export function getSupabaseReadClient(): SupabaseClient<Database> {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env["SUPABASE_URL"] || process.env["NEXT_PUBLIC_SUPABASE_URL"];
   const key =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env["NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"] ||
+    process.env["SUPABASE_PUBLISHABLE_KEY"] ||
+    process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 
   if (!url || !key) {
     throw new Error("Missing Supabase URL or publishable key for catalogue reads.");
@@ -57,8 +57,8 @@ export function getSupabaseReadClient(): SupabaseClient<Database> {
 
 /** Admin write client (service role). Required for create/update/delete. */
 export function getSupabaseWriteClient(): SupabaseClient<Database> {
-  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = process.env["SUPABASE_URL"] || process.env["NEXT_PUBLIC_SUPABASE_URL"];
+  const key = process.env["SUPABASE_SERVICE_ROLE_KEY"];
 
   if (!url || !key) {
     throw new Error(
