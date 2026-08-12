@@ -23,7 +23,9 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-sand px-5 py-16 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-4xl text-center">
-        <p className="font-display text-[2rem] font-bold tracking-tight sm:text-5xl">AB Collection</p>
+        <p className="font-display text-[2rem] font-bold tracking-tight sm:text-5xl">
+          AB Collection
+        </p>
         <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground">
           Premium everyday essentials. Launching soon — reserve your 10% early.
         </p>
@@ -83,6 +85,17 @@ export function SiteFooter() {
 
         <p className="mt-10 text-xs tracking-[0.12em] text-muted-foreground uppercase">
           © {new Date().getFullYear()} AB Collection · Made in India
+        </p>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Designed and developed by{" "}
+          <a
+            href="https://hussainiitservices.com"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="font-medium text-foreground underline-offset-4 transition-colors hover:text-teal hover:underline"
+          >
+            Hussainiitservices.com
+          </a>
         </p>
       </div>
     </footer>

@@ -12,7 +12,9 @@ export function ContactContent() {
   return (
     <div className="mx-auto max-w-4xl px-5 py-14 text-center sm:px-8 sm:py-20">
       <p className="eyebrow">Get in touch</p>
-      <h1 className="mt-4 font-display text-[2.15rem] font-bold tracking-tight sm:text-6xl">Contact</h1>
+      <h1 className="mt-4 font-display text-[2.15rem] font-bold tracking-tight sm:text-6xl">
+        Contact
+      </h1>
       <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
         Questions about the launch, sizing, or your reservation? We&apos;d love to hear from you.
       </p>
