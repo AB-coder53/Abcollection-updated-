@@ -25,10 +25,10 @@ export default function AboutPage() {
       <section className="px-5 pt-14 pb-10 sm:px-8 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
           <p className="eyebrow">Our story</p>
-          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl">
+          <h1 className="mt-4 font-display text-[2.15rem] font-bold tracking-tight sm:text-6xl">
             Built for the in-between
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             Most everyday clothing asks you to compromise. Either it feels good and falls apart, or
             it lasts and never feels like yours. AB Collection is premium construction without
             luxury pricing.
@@ -73,7 +73,7 @@ export default function AboutPage() {
 
       <section className="px-5 py-16 sm:px-8 sm:py-24">
         <Reveal>
-          <blockquote className="relative mx-auto max-w-4xl rounded-3xl border border-border px-8 py-14 text-center sm:px-16">
+          <blockquote className="relative mx-auto max-w-4xl rounded-3xl border border-border px-5 py-12 text-center sm:px-16 sm:py-14">
             <Quote className="mx-auto size-10 text-teal" strokeWidth={1.25} />
             <p className="mt-8 font-display text-2xl leading-snug font-medium sm:text-3xl">
               &ldquo;I kept buying tees that looked right in a photo and felt wrong by the third

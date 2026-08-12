@@ -23,7 +23,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-sand px-5 py-16 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-4xl text-center">
-        <p className="font-display text-4xl font-bold tracking-tight sm:text-5xl">AB Collection</p>
+        <p className="font-display text-[2rem] font-bold tracking-tight sm:text-5xl">AB Collection</p>
         <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground">
           Premium everyday essentials. Launching soon — reserve your 10% early.
         </p>
@@ -46,7 +46,7 @@ export function SiteFooter() {
           />
           <Button
             type="submit"
-            className="h-12 rounded-full bg-teal px-8 text-xs font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90"
+            className="h-12 w-full rounded-full bg-teal px-8 text-xs font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90 sm:w-auto"
           >
             Subscribe
           </Button>

@@ -30,7 +30,7 @@ export default async function CollectionPage() {
       <section className="px-5 pt-14 pb-8 sm:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <p className="eyebrow">First drop</p>
-          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl">
+          <h1 className="mt-4 font-display text-[2.15rem] font-bold tracking-tight sm:text-6xl">
             The Collection
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -41,7 +41,7 @@ export default async function CollectionPage() {
       </section>
 
       <section className="px-5 pb-20 sm:px-8 sm:pb-28">
-        <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {products.map((product, index) => (
             <Reveal key={product.id} delay={index * 50}>
               <ProductCard product={product} />

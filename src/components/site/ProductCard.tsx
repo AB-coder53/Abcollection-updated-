@@ -32,12 +32,12 @@ export function ProductCard({ product, badge }: { product: Product; badge?: stri
 
       <div className="mt-4 flex flex-1 flex-col">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-bold leading-snug">
+          <h3 className="min-w-0 text-base font-bold leading-snug sm:text-lg">
             <Link href={`/collection/${product.id}`} className="hover:text-teal">
               {product.name}
             </Link>
           </h3>
-          <p className="shrink-0 text-sm font-semibold text-teal">{product.price}</p>
+          <p className="shrink-0 pt-0.5 text-sm font-semibold text-teal">{product.price}</p>
         </div>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {product.tagline}

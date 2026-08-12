@@ -114,7 +114,7 @@ export function EarlyAccessOverlay({ forceOpen = false, onClose, onEmailCaptured
       role="dialog"
       aria-modal="true"
       aria-label="AB Collection early access"
-      className={`fixed inset-0 z-100 w-[100vw] overflow-x-hidden overflow-y-auto overscroll-contain bg-background transition-opacity duration-300 ${
+      className={`fixed inset-0 z-100 w-full overflow-x-hidden overflow-y-auto overscroll-contain bg-background transition-opacity duration-300 ${
         entered && !leaving ? "opacity-100" : "opacity-0"
       }`}
     >

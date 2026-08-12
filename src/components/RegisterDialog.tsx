@@ -365,7 +365,7 @@ export function RegisterDialog({ open, onOpenChange, product }: Props) {
 
                           <fieldset className="mt-5">
                             <legend className="eyebrow">Preferred size</legend>
-                            <div className="mt-3 grid grid-cols-5 gap-2">
+                            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
                               {p.sizes.map((s) => (
                                 <button
                                   type="button"
@@ -723,7 +723,9 @@ function SuccessScreen({
           <Check className="size-7" strokeWidth={1.5} />
         </div>
         <DialogTitle asChild>
-          <h2 className="animate-fade-in mt-8 font-display text-5xl leading-tight">You're In.</h2>
+          <h2 className="animate-fade-in mt-8 font-display text-3xl leading-tight sm:text-5xl">
+            You're In.
+          </h2>
         </DialogTitle>
         <DialogDescription asChild>
           <p className="animate-fade-in mx-auto mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -776,7 +778,7 @@ function AlreadyReservedScreen({
           <Check className="size-7" strokeWidth={1.5} />
         </div>
         <DialogTitle asChild>
-          <h2 className="animate-fade-in mt-8 font-display text-5xl leading-tight">
+          <h2 className="animate-fade-in mt-8 font-display text-3xl leading-tight sm:text-5xl">
             You're already on the list.
           </h2>
         </DialogTitle>

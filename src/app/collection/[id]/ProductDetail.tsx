@@ -69,16 +69,19 @@ export function ProductDetail({ product }: { product: Product }) {
       </div>
 
       <div>
-        <nav className="text-xs text-muted-foreground" aria-label="Breadcrumb">
+        <nav
+          className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"
+          aria-label="Breadcrumb"
+        >
           <Link href="/" className="hover:text-foreground">
             Home
           </Link>
-          <span className="mx-2">/</span>
+          <span aria-hidden>/</span>
           <Link href="/collection" className="hover:text-foreground">
             Collection
           </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">{product.name}</span>
+          <span aria-hidden>/</span>
+          <span className="min-w-0 break-words text-foreground">{product.name}</span>
         </nav>
 
         <p className="eyebrow mt-8">{product.fabric}</p>
@@ -117,14 +120,14 @@ export function ProductDetail({ product }: { product: Product }) {
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <Button
             onClick={() => openReservation(product)}
-            className="h-12 rounded-full bg-teal px-8 text-xs font-semibold tracking-[0.14em] text-teal-foreground uppercase hover:bg-teal/90"
+            className="h-12 w-full rounded-full bg-teal px-8 text-xs font-semibold tracking-[0.14em] text-teal-foreground uppercase hover:bg-teal/90 sm:w-auto"
           >
             Reserve Interest
           </Button>
           <Button
             asChild
             variant="outline"
-            className="h-12 rounded-full border-foreground px-8 text-xs font-semibold tracking-[0.14em] uppercase"
+            className="h-12 w-full rounded-full border-foreground px-8 text-xs font-semibold tracking-[0.14em] uppercase sm:w-auto"
           >
             <Link href="/collection">Back to Collection</Link>
           </Button>

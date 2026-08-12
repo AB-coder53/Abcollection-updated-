@@ -17,10 +17,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 sm:px-8">
+      <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto] items-center gap-3 px-5 sm:h-20 sm:gap-4 sm:px-8 md:grid-cols-[1fr_auto_1fr]">
         <Link
           href="/"
-          className="font-display text-2xl font-bold tracking-tight sm:text-[1.7rem]"
+          className="truncate font-display text-xl font-bold tracking-tight sm:text-[1.7rem]"
           aria-label="AB Collection home"
         >
           AB Collection
@@ -52,11 +52,11 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex items-center justify-end gap-2 sm:gap-3">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-3">
           <Link
             href="/collection"
             aria-label="Browse collection"
-            className="hidden size-10 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-muted hover:text-foreground sm:inline-flex"
+            className="hidden size-10 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-muted hover:text-foreground md:inline-flex"
           >
             <Search className="size-4" strokeWidth={1.75} />
           </Link>
@@ -64,13 +64,13 @@ export function SiteHeader() {
             type="button"
             aria-label="Account"
             onClick={primaryCta}
-            className="hidden size-10 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-muted hover:text-foreground sm:inline-flex"
+            className="hidden size-10 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-muted hover:text-foreground md:inline-flex"
           >
             <User className="size-4" strokeWidth={1.75} />
           </button>
           <Button
             onClick={primaryCta}
-            className="hidden h-10 rounded-full bg-teal px-5 text-xs font-semibold tracking-[0.08em] text-teal-foreground uppercase hover:bg-teal/90 sm:inline-flex"
+            className="hidden h-10 rounded-full bg-teal px-5 text-xs font-semibold tracking-[0.08em] text-teal-foreground uppercase hover:bg-teal/90 md:inline-flex"
           >
             {ctaLabel}
           </Button>
@@ -78,6 +78,7 @@ export function SiteHeader() {
             type="button"
             className="inline-flex size-10 items-center justify-center rounded-full hover:bg-muted md:hidden"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -88,16 +89,35 @@ export function SiteHeader() {
       {mobileOpen ? (
         <div className="border-t border-border bg-background px-5 py-4 md:hidden">
           <nav className="flex flex-col gap-1" aria-label="Mobile">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-3 py-3 text-sm font-medium hover:bg-muted"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const active =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname === link.href || pathname.startsWith(`${link.href}/`);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "rounded-full px-4 py-3 text-sm font-medium transition-colors",
+                    active
+                      ? "bg-muted text-foreground shadow-sm"
+                      : "text-foreground/80 hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/collection"
+              onClick={() => setMobileOpen(false)}
+              className="mt-1 inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-medium text-foreground/80 hover:bg-muted hover:text-foreground"
+            >
+              <Search className="size-4" strokeWidth={1.75} />
+              Search collection
+            </Link>
             <Button
               onClick={() => {
                 setMobileOpen(false);

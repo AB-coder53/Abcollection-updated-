@@ -24,21 +24,21 @@ export function HomeHero({ products }: { products: Product[] }) {
   const images = fanImages.length >= 3 ? fanImages : FAN_FALLBACK;
 
   return (
-    <section className="overflow-hidden px-5 pb-16 pt-10 sm:px-8 sm:pb-24 sm:pt-14">
+    <section className="overflow-hidden px-5 pb-14 pt-8 sm:px-8 sm:pb-24 sm:pt-14">
       <div className="mx-auto max-w-5xl text-center">
         <div className="animate-fan-in inline-flex items-center gap-2 rounded-full bg-ink px-4 py-1.5 text-[0.65rem] font-semibold tracking-[0.16em] text-ink-foreground uppercase">
           <ShoppingBag className="size-3.5" strokeWidth={2} />
           Premium Tees
         </div>
 
-        <h1 className="animate-fan-in mt-7 font-display text-[2.4rem] leading-[1.05] font-bold tracking-tight uppercase sm:text-6xl lg:text-7xl">
+        <h1 className="animate-fan-in mt-6 font-display text-[clamp(2rem,8.5vw,2.65rem)] leading-[1.05] font-bold tracking-tight uppercase sm:mt-7 sm:text-6xl lg:text-7xl">
           It&apos;s a manifesto
           <br />
           to be worn.
         </h1>
 
         <p
-          className="animate-fan-in mx-auto mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+          className="animate-fan-in mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground sm:mt-6 sm:text-base"
           style={{ animationDelay: "120ms" }}
         >
           Heavyweight 240–300 GSM cotton essentials for everyday life. Timeless cuts, honest
@@ -46,46 +46,50 @@ export function HomeHero({ products }: { products: Product[] }) {
         </p>
 
         <div
-          className="animate-fan-in mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          className="animate-fan-in mt-7 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-8 sm:flex-row sm:items-center"
           style={{ animationDelay: "200ms" }}
         >
           <Button
             onClick={primaryCta}
-            className="h-12 rounded-full bg-teal px-10 text-sm font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90"
+            className="h-12 w-full rounded-full bg-teal px-10 text-sm font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90 sm:w-auto"
           >
             {ctaLabel}
           </Button>
           <Button
             asChild
             variant="outline"
-            className="h-12 rounded-full border-foreground px-8 text-sm font-semibold tracking-[0.12em] uppercase"
+            className="h-12 w-full rounded-full border-foreground px-8 text-sm font-semibold tracking-[0.12em] uppercase sm:w-auto"
           >
             <Link href="/collection">Shop Collection</Link>
           </Button>
         </div>
       </div>
 
-      <div className="relative mx-auto mt-14 flex max-w-6xl items-end justify-center gap-2 sm:mt-16 sm:gap-4 md:gap-5">
-        {images.map((src, index) => (
-          <div
-            key={`${src}-${index}`}
-            className="animate-fan-in w-[18%] min-w-[4.5rem] max-w-[11rem] origin-bottom"
-            style={{ animationDelay: `${260 + index * 80}ms` }}
-          >
+      {/* Fan lookbook: slight overspill on xs so five cards match desktop composition */}
+      <div className="relative mx-auto mt-12 flex w-[112%] max-w-none -translate-x-[6%] items-end justify-center gap-1.5 sm:mt-16 sm:w-full sm:max-w-6xl sm:translate-x-0 sm:gap-4 md:gap-5">
+        {images.map((src, index) => {
+          const tilt = rotations[index % rotations.length] ?? 0;
+          return (
             <div
-              className="overflow-hidden rounded-2xl bg-muted shadow-[0_18px_40px_rgba(0,0,0,0.12)] transition-transform duration-500 hover:-translate-y-2"
-              style={{ transform: `rotate(${rotations[index % rotations.length]}deg)` }}
+              key={`${src}-${index}`}
+              className="animate-fan-in w-[18%] max-w-[11rem] origin-bottom"
+              style={{ animationDelay: `${260 + index * 80}ms` }}
             >
-              <img
-                src={src}
-                alt="AB Collection premium tee lookbook"
-                width={440}
-                height={586}
-                className="aspect-[3/4] w-full object-cover object-top"
-              />
+              <div
+                className="overflow-hidden rounded-xl bg-muted shadow-[0_14px_32px_rgba(0,0,0,0.12)] transition-transform duration-500 [transform:rotate(calc(var(--tilt)*0.55))] hover:[transform:translateY(-0.5rem)_rotate(calc(var(--tilt)*0.55))] sm:rounded-2xl sm:shadow-[0_18px_40px_rgba(0,0,0,0.12)] sm:[transform:rotate(var(--tilt))] sm:hover:[transform:translateY(-0.5rem)_rotate(var(--tilt))]"
+                style={{ ["--tilt" as string]: `${tilt}deg` }}
+              >
+                <img
+                  src={src}
+                  alt="AB Collection premium tee lookbook"
+                  width={440}
+                  height={586}
+                  className="aspect-[3/4] w-full object-cover object-top"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
@@ -93,17 +97,17 @@ export function HomeHero({ products }: { products: Product[] }) {
 
 export function HomeDiscover({ collections }: { collections: Collection[] }) {
   return (
-    <section className="bg-sand px-5 py-20 sm:px-8 sm:py-28" aria-labelledby="discover-heading">
+    <section className="bg-sand px-5 py-16 sm:px-8 sm:py-28" aria-labelledby="discover-heading">
       <Reveal>
         <h2
           id="discover-heading"
-          className="text-center font-display text-4xl font-bold tracking-tight sm:text-5xl"
+          className="text-center font-display text-[2rem] font-bold tracking-tight sm:text-5xl"
         >
           Discover Collection
         </h2>
       </Reveal>
 
-      <div className="mx-auto mt-12 grid max-w-6xl gap-6 md:grid-cols-3">
+      <div className="mx-auto mt-10 grid max-w-6xl gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 md:grid-cols-3">
         {collections.map((category, index) => {
           const href = category.productId ? `/collection/${category.productId}` : "/collection";
           return (
@@ -140,17 +144,17 @@ export function HomeFeatured({ products }: { products: Product[] }) {
   const list = featured.length ? featured : products.slice(0, 6);
 
   return (
-    <section className="px-5 py-20 sm:px-8 sm:py-28" aria-labelledby="featured-heading">
+    <section className="px-5 py-16 sm:px-8 sm:py-28" aria-labelledby="featured-heading">
       <Reveal>
         <h2
           id="featured-heading"
-          className="text-center font-display text-4xl font-bold tracking-tight sm:text-5xl"
+          className="text-center font-display text-[2rem] font-bold tracking-tight sm:text-5xl"
         >
           Featured Collection
         </h2>
       </Reveal>
 
-      <div className="mx-auto mt-14 grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto mt-10 grid max-w-7xl gap-5 sm:mt-14 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {list.map((product, index) => (
           <Reveal key={product.id} delay={index * 60}>
             <ProductCard product={product} />
@@ -158,10 +162,10 @@ export function HomeFeatured({ products }: { products: Product[] }) {
         ))}
       </div>
 
-      <div className="mt-12 text-center">
+      <div className="mt-10 text-center sm:mt-12">
         <Button
           asChild
-          className="h-12 rounded-full bg-teal px-10 text-sm font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90"
+          className="h-12 w-full max-w-xs rounded-full bg-teal px-10 text-sm font-semibold tracking-[0.12em] text-teal-foreground uppercase hover:bg-teal/90 sm:w-auto sm:max-w-none"
         >
           <Link href="/collection">See All</Link>
         </Button>
@@ -172,21 +176,23 @@ export function HomeFeatured({ products }: { products: Product[] }) {
 
 export function HomeCommunity({ products }: { products: Product[] }) {
   const positions = [
-    "left-[8%] top-[18%]",
-    "left-[18%] top-[58%]",
-    "left-[28%] top-[22%]",
-    "left-[12%] bottom-[12%]",
-    "right-[10%] top-[16%]",
-    "right-[22%] top-[52%]",
-    "right-[8%] bottom-[18%]",
-    "right-[30%] bottom-[14%]",
-    "left-[42%] top-[12%]",
-    "left-[48%] bottom-[10%]",
+    "left-[4%] top-[14%] sm:left-[8%] sm:top-[18%]",
+    "left-[12%] top-[62%] sm:left-[18%] sm:top-[58%]",
+    "left-[22%] top-[20%] sm:left-[28%] sm:top-[22%]",
+    "left-[6%] bottom-[10%] sm:left-[12%] sm:bottom-[12%]",
+    "right-[4%] top-[12%] sm:right-[10%] sm:top-[16%]",
+    "right-[14%] top-[56%] sm:right-[22%] sm:top-[52%]",
+    "right-[4%] bottom-[14%] sm:right-[8%] sm:bottom-[18%]",
+    "right-[22%] bottom-[12%] sm:right-[30%] sm:bottom-[14%]",
+    "left-[38%] top-[8%] sm:left-[42%] sm:top-[12%]",
+    "left-[44%] bottom-[8%] sm:left-[48%] sm:bottom-[10%]",
   ];
+  // On small screens keep edge avatars only so the headline stays clear
+  const mobileHidden = new Set([2, 8, 9]);
   const communityImages = products.slice(0, 10).map((p) => p.image);
 
   return (
-    <section className="relative overflow-hidden bg-ink px-5 py-28 text-ink-foreground sm:px-8 sm:py-36">
+    <section className="relative overflow-hidden bg-ink px-5 py-24 text-ink-foreground sm:px-8 sm:py-36">
       <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden>
         <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <g stroke="white" strokeWidth="0.15" strokeDasharray="0.8 0.8" fill="none" opacity="0.35">
@@ -205,24 +211,26 @@ export function HomeCommunity({ products }: { products: Product[] }) {
       {communityImages.map((src, index) => (
         <div
           key={`${src}-${index}`}
-          className={`animate-float-soft absolute hidden size-16 overflow-hidden rounded-full border-2 border-white/20 shadow-lg md:block lg:size-20 ${positions[index]}`}
+          className={`animate-float-soft absolute size-12 overflow-hidden rounded-full border-2 border-white/20 shadow-lg sm:size-14 md:size-16 lg:size-20 ${
+            mobileHidden.has(index) ? "hidden md:block" : ""
+          } ${positions[index]}`}
           style={{ animationDelay: `${index * 0.35}s` }}
         >
           <img src={src} alt="" className="h-full w-full object-cover object-top" />
         </div>
       ))}
 
-      <div className="relative z-10 mx-auto max-w-3xl text-center">
+      <div className="relative z-10 mx-auto max-w-3xl px-2 text-center sm:px-0">
         <Reveal>
-          <h2 className="font-display text-4xl font-bold tracking-tight uppercase sm:text-6xl">
+          <h2 className="font-display text-[2rem] font-bold tracking-tight uppercase sm:text-6xl">
             Wear Everyday
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-sm text-ink-foreground/65 sm:text-base">
+          <p className="mx-auto mt-4 max-w-md text-sm text-ink-foreground/65 sm:mt-5 sm:text-base">
             Built for comfort. Designed to be lived in. Join the first wave of AB Collection.
           </p>
           <Button
             asChild
-            className="mt-8 h-12 rounded-full bg-teal px-8 text-sm font-semibold tracking-[0.12em] text-teal-foreground uppercase"
+            className="mt-7 h-12 w-full max-w-xs rounded-full bg-teal px-8 text-sm font-semibold tracking-[0.12em] text-teal-foreground uppercase sm:mt-8 sm:w-auto sm:max-w-none"
           >
             <Link href="/about">Our Story</Link>
           </Button>
