@@ -5,10 +5,7 @@ import { CustomersTable } from "@/components/admin/CustomersTable";
 import { EarlyAccessTable } from "@/components/admin/EarlyAccessTable";
 import { LeadsSetupNotice } from "@/components/admin/LeadsSetupNotice";
 import { getAdminSession } from "@/lib/admin-auth.server";
-import {
-  getEarlyAccessSubscribers,
-  isEarlyAccessTableReady,
-} from "@/lib/early-access-service";
+import { getEarlyAccessSubscribers, isEarlyAccessTableReady } from "@/lib/early-access-service";
 import { getCustomerLeads, isLeadsTableReady } from "@/lib/leads";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -38,8 +35,7 @@ export default async function AdminCustomersPage() {
         getEarlyAccessSubscribers(),
       ]);
     } catch (error) {
-      loadError =
-        error instanceof Error ? error.message : "Could not load customer submissions.";
+      loadError = error instanceof Error ? error.message : "Could not load customer submissions.";
     }
   }
 

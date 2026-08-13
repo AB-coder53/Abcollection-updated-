@@ -143,7 +143,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
 
             <div className="mt-6 space-y-5">
               <div>
-                <Label htmlFor="interest-name" className="text-xs font-semibold tracking-[0.12em] uppercase">
+                <Label
+                  htmlFor="interest-name"
+                  className="text-xs font-semibold tracking-[0.12em] uppercase"
+                >
                   Full name
                 </Label>
                 <Input
@@ -155,7 +158,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
                   onChange={(e) => setFullName(e.target.value)}
                   onBlur={() => setTouched((t) => ({ ...t, fullName: true }))}
                   placeholder="Your name"
-                  className={cn(fieldClass, touched.fullName && !nameValid ? "border-destructive" : "")}
+                  className={cn(
+                    fieldClass,
+                    touched.fullName && !nameValid ? "border-destructive" : "",
+                  )}
                 />
                 {touched.fullName && !nameValid ? (
                   <p className="mt-1.5 text-xs text-destructive">Please enter your full name.</p>
@@ -163,7 +169,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
               </div>
 
               <div>
-                <Label htmlFor="interest-email" className="text-xs font-semibold tracking-[0.12em] uppercase">
+                <Label
+                  htmlFor="interest-email"
+                  className="text-xs font-semibold tracking-[0.12em] uppercase"
+                >
                   Email address
                 </Label>
                 <Input
@@ -177,7 +186,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => setTouched((t) => ({ ...t, email: true }))}
                   placeholder="you@email.com"
-                  className={cn(fieldClass, touched.email && !emailValid ? "border-destructive" : "")}
+                  className={cn(
+                    fieldClass,
+                    touched.email && !emailValid ? "border-destructive" : "",
+                  )}
                 />
                 {touched.email && !emailValid ? (
                   <p className="mt-1.5 text-xs text-destructive">Enter a valid email address.</p>
@@ -185,7 +197,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
               </div>
 
               <div>
-                <Label htmlFor="interest-mobile" className="text-xs font-semibold tracking-[0.12em] uppercase">
+                <Label
+                  htmlFor="interest-mobile"
+                  className="text-xs font-semibold tracking-[0.12em] uppercase"
+                >
                   Contact number
                 </Label>
                 <Input
@@ -198,7 +213,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
                   onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
                   onBlur={() => setTouched((t) => ({ ...t, mobile: true }))}
                   placeholder="10-digit mobile number"
-                  className={cn(fieldClass, touched.mobile && !mobileValid ? "border-destructive" : "")}
+                  className={cn(
+                    fieldClass,
+                    touched.mobile && !mobileValid ? "border-destructive" : "",
+                  )}
                 />
                 {touched.mobile && !mobileValid ? (
                   <p className="mt-1.5 text-xs text-destructive">

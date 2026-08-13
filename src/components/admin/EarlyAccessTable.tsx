@@ -35,7 +35,10 @@ export function EarlyAccessTable({ subscribers }: { subscribers: EarlyAccessSubs
             {subscribers.map((subscriber) => (
               <tr key={subscriber.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3">
-                  <a href={`mailto:${subscriber.email}`} className="font-medium text-teal hover:underline">
+                  <a
+                    href={`mailto:${subscriber.email}`}
+                    className="font-medium text-teal hover:underline"
+                  >
                     {subscriber.email}
                   </a>
                 </td>

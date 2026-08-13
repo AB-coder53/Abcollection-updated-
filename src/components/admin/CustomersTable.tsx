@@ -82,7 +82,9 @@ export function CustomersTable({ customers }: { customers: CustomerLead[] }) {
                 <td className="px-4 py-3">
                   <ProductCell lead={customer} />
                 </td>
-                <td className="px-4 py-3 text-muted-foreground">{formatDate(customer.createdAt)}</td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  {formatDate(customer.createdAt)}
+                </td>
               </tr>
             ))}
           </tbody>
