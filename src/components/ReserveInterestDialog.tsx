@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, Loader2, X } from "lucide-react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Product } from "@/lib/catalog-types";
+import { colorSwatchClass, colorToImageIndex } from "@/lib/product-colors";
+import type { ReservationSelection } from "@/lib/reservation-types";
 import { cn } from "@/lib/utils";
 
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  product: Product | null;
+  selection: ReservationSelection | null;
 };
 
 const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -22,10 +23,15 @@ const isValidMobile = (value: string) => /^[6-9]\d{9}$/.test(value.trim());
 const fieldClass =
   "mt-2 h-12 rounded-xl border border-border bg-muted/40 px-4 text-base shadow-none transition-colors focus-visible:border-foreground focus-visible:bg-background focus-visible:ring-0";
 
-export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
+export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) {
+  const product = selection?.product ?? null;
+  const images = product?.images?.length ? product.images : product ? [product.image] : [];
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
   const [touched, setTouched] = useState({ fullName: false, email: false, mobile: false });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -36,16 +42,29 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
     setFullName("");
     setEmail("");
     setMobile("");
+    setSelectedColor(selection?.color ?? product?.colors[0] ?? "");
+    setSelectedSize(selection?.size ?? product?.sizes[0] ?? "");
     setTouched({ fullName: false, email: false, mobile: false });
     setError("");
     setDone(false);
     setLoading(false);
-  }, [open]);
+  }, [open, selection, product]);
+
+  const previewImage = useMemo(() => {
+    if (!product) return "";
+    if (selectedColor) {
+      const index = colorToImageIndex(selectedColor, product.colors, images);
+      return images[index] ?? product.image;
+    }
+    return selection?.image ?? product.image;
+  }, [product, selectedColor, images, selection?.image]);
 
   const nameValid = fullName.trim().length >= 2;
   const emailValid = isValidEmail(email);
   const mobileValid = isValidMobile(mobile);
-  const canSubmit = nameValid && emailValid && mobileValid && !loading;
+  const colorValid = !product || !!selectedColor;
+  const sizeValid = !product || !!selectedSize;
+  const canSubmit = nameValid && emailValid && mobileValid && colorValid && sizeValid && !loading;
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -68,7 +87,9 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
                 name: product.name,
                 price: product.price,
                 fabric: product.fabric,
-                image: product.image,
+                image: previewImage,
+                color: selectedColor,
+                size: selectedSize,
               }
             : undefined,
         }),
@@ -117,8 +138,10 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
             <DialogDescription asChild>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Thanks for your interest in AB Collection
-                {product ? ` — ${product.name}` : ""}. We'll reach out before launch with your
-                exclusive 10% discount.
+                {product ? ` — ${product.name}` : ""}
+                {selectedColor ? ` in ${selectedColor}` : ""}
+                {selectedSize ? `, size ${selectedSize}` : ""}. We'll reach out before launch with
+                your exclusive 10% discount.
               </p>
             </DialogDescription>
             <Button
@@ -129,17 +152,92 @@ export function ReserveInterestDialog({ open, onOpenChange, product }: Props) {
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="px-5 py-6" noValidate>
+          <form
+            onSubmit={handleSubmit}
+            className="max-h-[70vh] overflow-y-auto px-5 py-6"
+            noValidate
+          >
             <DialogTitle asChild>
               <h2 className="font-display text-2xl leading-tight">Reserve your launch access</h2>
             </DialogTitle>
             <DialogDescription asChild>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {product
-                  ? `Tell us how to reach you about ${product.name}. No payment today.`
+                  ? `Choose your colour and size for ${product.name}. No payment today.`
                   : "Share your details and we'll notify you before everyone else when we launch."}
               </p>
             </DialogDescription>
+
+            {product ? (
+              <div className="mt-5 rounded-2xl border border-border bg-muted/30 p-4">
+                <div className="flex gap-4">
+                  <img
+                    src={previewImage}
+                    alt={`${product.name} — ${selectedColor}`}
+                    className="size-20 shrink-0 rounded-xl object-cover object-top"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-medium leading-snug">{product.name}</p>
+                    <p className="mt-1 text-sm text-teal">{product.price}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{product.fabric}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <p className="text-xs font-semibold tracking-[0.12em] uppercase">Colour</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {product.colors.map((color) => {
+                      const selected = color === selectedColor;
+                      return (
+                        <button
+                          key={color}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => setSelectedColor(color)}
+                          className={cn(
+                            "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition-colors",
+                            selected
+                              ? "border-foreground bg-foreground text-background"
+                              : "border-border bg-background hover:border-foreground",
+                          )}
+                        >
+                          <span
+                            aria-hidden
+                            className={cn("size-3 rounded-full", colorSwatchClass(color))}
+                          />
+                          {color}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <p className="text-xs font-semibold tracking-[0.12em] uppercase">Size</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {product.sizes.map((size) => {
+                      const selected = size === selectedSize;
+                      return (
+                        <button
+                          key={size}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => setSelectedSize(size)}
+                          className={cn(
+                            "inline-flex h-9 min-w-9 items-center justify-center rounded-full border px-3 text-xs transition-colors",
+                            selected
+                              ? "border-foreground bg-foreground text-background"
+                              : "border-border bg-background hover:border-foreground",
+                          )}
+                        >
+                          {size}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ) : null}
 
             <div className="mt-6 space-y-5">
               <div>

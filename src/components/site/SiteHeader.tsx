@@ -19,18 +19,15 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
       <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto] items-center gap-3 px-5 sm:h-20 sm:gap-4 sm:px-8 md:grid-cols-[1fr_auto_1fr]">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="AB Collection home">
+        <Link href="/" className="inline-flex items-center" aria-label="AB Collection home">
           <Image
             src="/logo.png"
             alt="AB Collection"
-            width={40}
-            height={40}
+            width={56}
+            height={56}
             priority
-            className="size-9 shrink-0 sm:size-10"
+            className="size-12 shrink-0 sm:size-14"
           />
-          <span className="truncate font-display text-lg font-bold tracking-tight sm:text-xl">
-            AB Collection
-          </span>
         </Link>
 
         <nav

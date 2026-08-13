@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { ProductCard } from "@/components/site/ProductCard";
-import { Reveal } from "@/components/Reveal";
+import { ProductGrid } from "@/components/site/ProductGrid";
 import { getProducts } from "@/lib/catalog.server";
 import { JsonLd, breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 
@@ -41,13 +40,7 @@ export default async function CollectionPage() {
       </section>
 
       <section className="px-5 pb-20 sm:px-8 sm:pb-28">
-        <div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {products.map((product, index) => (
-            <Reveal key={product.id} delay={index * 50}>
-              <ProductCard product={product} />
-            </Reveal>
-          ))}
-        </div>
+        <ProductGrid products={products} />
         <p className="mx-auto mt-12 max-w-xl text-center text-sm text-muted-foreground">
           Looking for something specific?{" "}
           <Link

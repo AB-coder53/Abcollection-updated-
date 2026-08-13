@@ -1,41 +1,47 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useReservation } from "@/components/site/SiteShell";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/catalog-types";
+import { colorSwatchClass, colorToImageIndex, indexToColor } from "@/lib/product-colors";
 import { cn } from "@/lib/utils";
-import { colorSwatchClass, colorToImageIndex } from "@/lib/product-colors";
 
 export function ProductDetail({ product }: { product: Product }) {
   const images = product.images?.length ? product.images : [product.image];
-  const [index, setIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(product.colors[0] ?? "");
+  const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
   const { openReservation } = useReservation();
 
-  const activeColor = useMemo(() => {
-    const matched = product.colors.find(
-      (color) => colorToImageIndex(color, product.colors, images) === index,
-    );
-    return matched ?? product.colors[index] ?? product.colors[0] ?? "";
-  }, [index, images, product.colors]);
-
   const selectColor = (color: string) => {
-    setIndex(colorToImageIndex(color, product.colors, images));
+    setSelectedColor(color);
+    setSelectedImageIndex(colorToImageIndex(color, product.colors, images));
   };
 
-  const go = (dir: number) => setIndex((i) => (i + dir + images.length) % images.length);
+  const selectImageIndex = (index: number) => {
+    setSelectedImageIndex(index);
+    setSelectedColor(indexToColor(index, product.colors, images));
+  };
+
+  const go = (dir: number) => {
+    const next = (selectedImageIndex + dir + images.length) % images.length;
+    selectImageIndex(next);
+  };
+
+  const activeImage = images[selectedImageIndex] ?? product.image;
 
   return (
     <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-20">
       <div>
         <div className="relative overflow-hidden rounded-3xl bg-muted">
           <img
-            key={images[index]}
-            src={images[index]}
-            alt={`${product.name} — ${activeColor}`}
+            key={`${selectedImageIndex}-${activeImage}`}
+            src={activeImage}
+            alt={`${product.name} — ${selectedColor}`}
             width={1120}
             height={1400}
             className="aspect-[4/5] w-full object-cover object-top transition-opacity duration-300"
@@ -63,22 +69,31 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
         {images.length > 1 ? (
           <div className="mt-4 grid grid-cols-4 gap-3">
-            {images.map((src, i) => (
-              <button
-                key={src}
-                type="button"
-                onClick={() => setIndex(i)}
-                className={`overflow-hidden rounded-xl border-2 transition-colors ${
-                  i === index ? "border-foreground" : "border-transparent hover:border-border"
-                }`}
-              >
-                <img
-                  src={src}
-                  alt={`${product.name} view ${i + 1}`}
-                  className="aspect-square w-full object-cover object-top"
-                />
-              </button>
-            ))}
+            {images.map((src, i) => {
+              const thumbColor = indexToColor(i, product.colors, images);
+              const selected = i === selectedImageIndex;
+              return (
+                <button
+                  key={`${src}-${i}`}
+                  type="button"
+                  aria-label={`${product.name} in ${thumbColor}`}
+                  aria-pressed={selected}
+                  onClick={() => selectImageIndex(i)}
+                  className={cn(
+                    "overflow-hidden rounded-xl transition-opacity outline-none focus-visible:ring-0",
+                    selected
+                      ? "opacity-100 ring-2 ring-foreground/20"
+                      : "opacity-70 hover:opacity-100",
+                  )}
+                >
+                  <img
+                    src={src}
+                    alt={`${product.name} ${thumbColor}`}
+                    className="aspect-square w-full object-cover object-top"
+                  />
+                </button>
+              );
+            })}
           </div>
         ) : null}
       </div>
@@ -124,7 +139,7 @@ export function ProductDetail({ product }: { product: Product }) {
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.colors.map((color) => {
-                const selected = color === activeColor;
+                const selected = color === selectedColor;
                 return (
                   <button
                     key={color}
@@ -132,7 +147,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     aria-pressed={selected}
                     onClick={() => selectColor(color)}
                     className={cn(
-                      "inline-flex items-center gap-2.5 rounded-full border px-4 py-2 text-sm transition-colors",
+                      "inline-flex items-center gap-2.5 rounded-full border px-4 py-2 text-sm transition-colors outline-none focus-visible:ring-0",
                       selected
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-background hover:border-foreground",
@@ -158,21 +173,39 @@ export function ProductDetail({ product }: { product: Product }) {
               Sizes
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {product.sizes.map((size) => (
-                <span
-                  key={size}
-                  className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-border px-3 text-sm"
-                >
-                  {size}
-                </span>
-              ))}
+              {product.sizes.map((size) => {
+                const selected = size === selectedSize;
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setSelectedSize(size)}
+                    className={cn(
+                      "inline-flex h-10 min-w-10 items-center justify-center rounded-full border px-3 text-sm transition-colors outline-none focus-visible:ring-0",
+                      selected
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border hover:border-foreground",
+                    )}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <Button
-            onClick={() => openReservation(product)}
+            onClick={() =>
+              openReservation({
+                product,
+                color: selectedColor,
+                size: selectedSize,
+                image: activeImage,
+              })
+            }
             className="h-12 w-full rounded-full bg-teal px-8 text-xs font-semibold tracking-[0.14em] text-teal-foreground uppercase hover:bg-teal/90 sm:w-auto"
           >
             Reserve Interest

@@ -29,8 +29,17 @@ function ProductCell({ lead }: { lead: CustomerLead }) {
       <div className="min-w-0">
         <p className="font-medium leading-snug">{product.name}</p>
         <p className="mt-0.5 text-xs text-muted-foreground">{product.fabric}</p>
+        {lead.preferredColor ? (
+          <p className="mt-1 text-xs">
+            Colour: <span className="font-medium">{lead.preferredColor}</span>
+          </p>
+        ) : null}
+        {lead.preferredSize ? (
+          <p className="mt-0.5 text-xs">
+            Size: <span className="font-medium">{lead.preferredSize}</span>
+          </p>
+        ) : null}
         <p className="mt-1 text-sm font-semibold text-teal">{product.price}</p>
-        <p className="mt-0.5 text-[0.65rem] text-muted-foreground">ID: {product.id}</p>
       </div>
     </div>
   );

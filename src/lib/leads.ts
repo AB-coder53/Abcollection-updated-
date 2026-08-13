@@ -10,6 +10,8 @@ export const productInterestSchema = z.object({
   price: z.string().trim().min(1).max(40),
   fabric: z.string().trim().min(1).max(120),
   image: z.string().trim().min(1).max(500),
+  color: z.string().trim().min(1).max(40).optional(),
+  size: z.string().trim().min(1).max(10).optional(),
 });
 
 export const interestSchema = z.object({
@@ -32,6 +34,8 @@ export type CustomerLead = {
   mobile: string;
   products: string[];
   productDetails: ProductInterest | null;
+  preferredColor: string | null;
+  preferredSize: string | null;
   source: string | null;
   createdAt: string;
 };
@@ -55,7 +59,13 @@ function parseProductDetails(value: unknown): ProductInterest | null {
 }
 
 export async function registerInterest(data: InterestInput) {
-  const products = data.product ? [data.product.name] : ["General Interest"];
+  const colorLabel = data.product?.color;
+  const productLabel = data.product
+    ? colorLabel
+      ? `${data.product.name} (${colorLabel})`
+      : data.product.name
+    : "General Interest";
+  const products = [productLabel];
   const discountCode = `AB10-${data.mobile.slice(-4)}${Math.random()
     .toString(36)
     .slice(2, 5)
@@ -83,6 +93,8 @@ export async function registerInterest(data: InterestInput) {
     email: data.email,
     products,
     product_details: data.product ?? null,
+    preferred_color: data.product?.color ?? null,
+    preferred_size: data.product?.size ?? null,
     whatsapp_optin: true,
     marketing_consent: true,
     discount_code: discountCode,
@@ -103,7 +115,9 @@ export async function registerInterest(data: InterestInput) {
 export async function getCustomerLeads(): Promise<CustomerLead[]> {
   const { data, error } = await supabaseAdmin
     .from("prelaunch_leads")
-    .select("id, full_name, email, mobile, products, product_details, source, created_at")
+    .select(
+      "id, full_name, email, mobile, products, product_details, preferred_color, preferred_size, source, created_at",
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -111,16 +125,21 @@ export async function getCustomerLeads(): Promise<CustomerLead[]> {
     throw new Error(supabaseErrorMessage(error));
   }
 
-  return (data ?? []).map((row) => ({
-    id: row.id,
-    fullName: row.full_name,
-    email: row.email,
-    mobile: row.mobile,
-    products: row.products ?? [],
-    productDetails: parseProductDetails(row.product_details),
-    source: row.source,
-    createdAt: row.created_at,
-  }));
+  return (data ?? []).map((row) => {
+    const productDetails = parseProductDetails(row.product_details);
+    return {
+      id: row.id,
+      fullName: row.full_name,
+      email: row.email,
+      mobile: row.mobile,
+      products: row.products ?? [],
+      productDetails,
+      preferredColor: productDetails?.color ?? row.preferred_color,
+      preferredSize: productDetails?.size ?? row.preferred_size,
+      source: row.source,
+      createdAt: row.created_at,
+    };
+  });
 }
 
 export async function isLeadsTableReady() {

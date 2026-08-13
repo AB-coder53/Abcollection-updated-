@@ -7,6 +7,7 @@ import { EarlyAccessOverlay } from "@/components/EarlyAccessOverlay";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import type { Product } from "@/lib/catalog-types";
+import { isReservationSelection, type ReservationSelection } from "@/lib/reservation-types";
 
 const ReserveInterestDialog = dynamic(
   () => import("@/components/ReserveInterestDialog").then((m) => m.ReserveInterestDialog),
@@ -16,7 +17,7 @@ const ReserveInterestDialog = dynamic(
 type ReservationContextValue = {
   ctaLabel: string;
   openEarlyAccess: () => void;
-  openReservation: (product?: Product | null) => void;
+  openReservation: (request?: Product | ReservationSelection | null) => void;
   primaryCta: () => void;
 };
 
@@ -30,14 +31,30 @@ export function useReservation() {
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const [registerOpen, setRegisterOpen] = useState(false);
-  const [selected, setSelected] = useState<Product | null>(null);
+  const [selection, setSelection] = useState<ReservationSelection | null>(null);
   const [earlyAccessOpen, setEarlyAccessOpen] = useState(false);
   const ctaLabel = "RESERVE INTEREST";
 
   const openEarlyAccess = useCallback(() => setEarlyAccessOpen(true), []);
 
-  const openReservation = useCallback((product: Product | null = null) => {
-    setSelected(product);
+  const openReservation = useCallback((request: Product | ReservationSelection | null = null) => {
+    if (!request) {
+      setSelection(null);
+      setRegisterOpen(true);
+      return;
+    }
+
+    if (isReservationSelection(request)) {
+      setSelection(request);
+    } else {
+      const images = request.images?.length ? request.images : [request.image];
+      setSelection({
+        product: request,
+        color: request.colors[0] ?? "",
+        size: request.sizes[0] ?? "",
+        image: images[0] ?? request.image,
+      });
+    }
     setRegisterOpen(true);
   }, []);
 
@@ -61,7 +78,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <ReserveInterestDialog
             open={registerOpen}
             onOpenChange={setRegisterOpen}
-            product={selected}
+            selection={selection}
           />
         ) : null}
       </div>

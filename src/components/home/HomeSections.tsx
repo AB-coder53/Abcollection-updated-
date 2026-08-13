@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
+import { CollectionGrid } from "@/components/site/CollectionGrid";
 import { useReservation } from "@/components/site/SiteShell";
-import { ProductCard } from "@/components/site/ProductCard";
+import { ProductGrid } from "@/components/site/ProductGrid";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/button";
 import type { Collection, Product } from "@/lib/catalog-types";
@@ -65,8 +66,8 @@ export function HomeHero({ products }: { products: Product[] }) {
         </div>
       </div>
 
-      {/* Fan lookbook: slight overspill on xs so five cards match desktop composition */}
-      <div className="relative mx-auto mt-12 flex w-[112%] max-w-none -translate-x-[6%] items-end justify-center gap-1.5 sm:mt-16 sm:w-full sm:max-w-6xl sm:translate-x-0 sm:gap-4 md:gap-5">
+      {/* Fan lookbook: 3D floating cards */}
+      <div className="relative mx-auto mt-12 flex w-[112%] max-w-none -translate-x-[6%] items-end justify-center gap-1.5 [perspective:1200px] sm:mt-16 sm:w-full sm:max-w-6xl sm:translate-x-0 sm:gap-4 md:gap-5">
         {images.map((src, index) => {
           const tilt = rotations[index % rotations.length] ?? 0;
           return (
@@ -76,16 +77,26 @@ export function HomeHero({ products }: { products: Product[] }) {
               style={{ animationDelay: `${260 + index * 80}ms` }}
             >
               <div
-                className="overflow-hidden rounded-xl bg-muted shadow-[0_14px_32px_rgba(0,0,0,0.12)] transition-transform duration-500 [transform:rotate(calc(var(--tilt)*0.55))] hover:[transform:translateY(-0.5rem)_rotate(calc(var(--tilt)*0.55))] sm:rounded-2xl sm:shadow-[0_18px_40px_rgba(0,0,0,0.12)] sm:[transform:rotate(var(--tilt))] sm:hover:[transform:translateY(-0.5rem)_rotate(var(--tilt))]"
-                style={{ ["--tilt" as string]: `${tilt}deg` }}
+                className="animate-fan-card-float"
+                style={{ animationDelay: `${index * 0.45}s` }}
               >
-                <img
-                  src={src}
-                  alt="AB Collection premium tee lookbook"
-                  width={440}
-                  height={586}
-                  className="aspect-[3/4] w-full object-cover object-top"
-                />
+                <div
+                  className="[transform:rotate(calc(var(--tilt)*0.55))] sm:[transform:rotate(var(--tilt))]"
+                  style={{ ["--tilt" as string]: `${tilt}deg` }}
+                >
+                  <div
+                    className="animate-fan-card-3d overflow-hidden rounded-xl bg-muted shadow-[0_14px_32px_rgba(0,0,0,0.12)] transition-transform duration-500 [transform-style:preserve-3d] hover:scale-[1.03] sm:rounded-2xl sm:shadow-[0_18px_40px_rgba(0,0,0,0.12)]"
+                    style={{ animationDelay: `${index * 0.35}s` }}
+                  >
+                    <img
+                      src={src}
+                      alt="AB Collection premium tee lookbook"
+                      width={440}
+                      height={586}
+                      className="aspect-[3/4] w-full object-cover object-top"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           );
@@ -107,33 +118,8 @@ export function HomeDiscover({ collections }: { collections: Collection[] }) {
         </h2>
       </Reveal>
 
-      <div className="mx-auto mt-10 grid max-w-6xl gap-5 sm:mt-12 sm:grid-cols-2 sm:gap-6 md:grid-cols-3">
-        {collections.map((category, index) => {
-          const href = category.productId ? `/collection/${category.productId}` : "/collection";
-          return (
-            <Reveal key={category.id} delay={index * 90}>
-              <article
-                className={`${category.tint} overflow-hidden rounded-[1.75rem] p-4 pb-5 shadow-sm`}
-              >
-                <Link href={href} className="block overflow-hidden rounded-[1.25rem] bg-white/40">
-                  <img
-                    src={category.image}
-                    alt={`${category.title} tees from AB Collection`}
-                    width={640}
-                    height={800}
-                    className="aspect-[4/5] w-full object-cover object-top transition-transform duration-700 hover:scale-105"
-                  />
-                </Link>
-                <Button
-                  asChild
-                  className="mt-4 h-12 w-full rounded-full bg-teal text-sm font-semibold tracking-[0.14em] text-teal-foreground uppercase hover:bg-teal/90"
-                >
-                  <Link href={href}>{category.title}</Link>
-                </Button>
-              </article>
-            </Reveal>
-          );
-        })}
+      <div className="mx-auto mt-10 max-w-6xl sm:mt-12">
+        <CollectionGrid collections={collections} />
       </div>
     </section>
   );
@@ -154,12 +140,8 @@ export function HomeFeatured({ products }: { products: Product[] }) {
         </h2>
       </Reveal>
 
-      <div className="mx-auto mt-10 grid max-w-7xl gap-5 sm:mt-14 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-        {list.map((product, index) => (
-          <Reveal key={product.id} delay={index * 60}>
-            <ProductCard product={product} />
-          </Reveal>
-        ))}
+      <div className="mx-auto mt-10 max-w-7xl sm:mt-14">
+        <ProductGrid products={list} />
       </div>
 
       <div className="mt-10 text-center sm:mt-12">
