@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, Search, User, X } from "lucide-react";
 import { useState } from "react";
@@ -18,12 +19,18 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
       <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto] items-center gap-3 px-5 sm:h-20 sm:gap-4 sm:px-8 md:grid-cols-[1fr_auto_1fr]">
-        <Link
-          href="/"
-          className="truncate font-display text-xl font-bold tracking-tight sm:text-[1.7rem]"
-          aria-label="AB Collection home"
-        >
-          AB Collection
+        <Link href="/" className="flex items-center gap-2.5" aria-label="AB Collection home">
+          <Image
+            src="/logo.png"
+            alt="AB Collection"
+            width={40}
+            height={40}
+            priority
+            className="size-9 shrink-0 sm:size-10"
+          />
+          <span className="truncate font-display text-lg font-bold tracking-tight sm:text-xl">
+            AB Collection
+          </span>
         </Link>
 
         <nav
@@ -62,7 +69,7 @@ export function SiteHeader() {
           </Link>
           <button
             type="button"
-            aria-label="Account"
+            aria-label="Reserve interest"
             onClick={primaryCta}
             className="hidden size-10 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-muted hover:text-foreground md:inline-flex"
           >

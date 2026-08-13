@@ -69,7 +69,7 @@ export function organizationJsonLd() {
     description: `${SITE_NAME} — ${SITE_TAGLINE}. Premium everyday essentials for men.`,
     email: "abbasbadwahwala53@gmail.com",
     sameAs: ["https://instagram.com/abcollection.co.in"],
-    logo: absoluteUrl("/favicon.png"),
+    logo: absoluteUrl("/logo.png"),
     brand: {
       "@type": "Brand",
       name: SITE_NAME,

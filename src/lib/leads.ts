@@ -4,50 +4,126 @@ import { z } from "zod";
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-export const leadSchema = z.object({
+export const productInterestSchema = z.object({
+  id: z.string().trim().min(1).max(80),
+  name: z.string().trim().min(1).max(120),
+  price: z.string().trim().min(1).max(40),
+  fabric: z.string().trim().min(1).max(120),
+  image: z.string().trim().min(1).max(500),
+});
+
+export const interestSchema = z.object({
   fullName: z.string().trim().min(2, "Please enter your name").max(100),
+  email: z.string().trim().email("Enter a valid email").max(255),
   mobile: z
     .string()
     .trim()
     .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
-  email: z.string().trim().email("Enter a valid email").max(255).optional().or(z.literal("")),
-  city: z.string().trim().max(80).optional().or(z.literal("")),
-  products: z.array(z.string().max(60)).min(1, "Select at least one product").max(10),
-  size: z.string().trim().max(10).optional().or(z.literal("")),
-  color: z.string().trim().max(40).optional().or(z.literal("")),
-  quantity: z.number().int().min(1).max(10).default(1),
-  whatsappOptIn: z.boolean().default(true),
-  marketingConsent: z.boolean().default(false),
-  source: z.string().trim().max(60).optional().or(z.literal("")),
+  product: productInterestSchema.optional(),
 });
 
-export type LeadInput = z.input<typeof leadSchema>;
+export type InterestInput = z.infer<typeof interestSchema>;
+export type ProductInterest = z.infer<typeof productInterestSchema>;
 
-export async function registerLead(data: z.infer<typeof leadSchema>) {
+export type CustomerLead = {
+  id: string;
+  fullName: string;
+  email: string | null;
+  mobile: string;
+  products: string[];
+  productDetails: ProductInterest | null;
+  source: string | null;
+  createdAt: string;
+};
+
+function supabaseErrorMessage(error: { message?: string; code?: string }) {
+  const message = error.message ?? "Unknown Supabase error";
+  if (
+    message.includes("Could not find the table") ||
+    message.includes("prelaunch_leads") ||
+    message.includes("product_details")
+  ) {
+    return "Customer database is not set up yet. Run: npm run db:setup-leads";
+  }
+  return message;
+}
+
+function parseProductDetails(value: unknown): ProductInterest | null {
+  if (!value || typeof value !== "object") return null;
+  const parsed = productInterestSchema.safeParse(value);
+  return parsed.success ? parsed.data : null;
+}
+
+export async function registerInterest(data: InterestInput) {
+  const products = data.product ? [data.product.name] : ["General Interest"];
   const discountCode = `AB10-${data.mobile.slice(-4)}${Math.random()
     .toString(36)
     .slice(2, 5)
     .toUpperCase()}`;
 
+  const { data: existing, error: lookupError } = await supabaseAdmin
+    .from("prelaunch_leads")
+    .select("id")
+    .or(`mobile.eq.${data.mobile},email.eq.${data.email}`)
+    .limit(1)
+    .maybeSingle();
+
+  if (lookupError) {
+    console.error("[prelaunch_leads] lookup failed", lookupError.message);
+    throw new Error(supabaseErrorMessage(lookupError));
+  }
+
+  if (existing) {
+    return { ok: true as const, duplicate: true as const };
+  }
+
   const { error } = await supabaseAdmin.from("prelaunch_leads").insert({
     full_name: data.fullName,
     mobile: data.mobile,
-    email: data.email || null,
-    city: data.city || null,
-    products: data.products,
-    preferred_size: data.size || null,
-    preferred_color: data.color || null,
-    quantity: data.quantity,
-    whatsapp_optin: data.whatsappOptIn,
-    marketing_consent: data.marketingConsent,
+    email: data.email,
+    products,
+    product_details: data.product ?? null,
+    whatsapp_optin: true,
+    marketing_consent: true,
     discount_code: discountCode,
-    source: data.source || null,
+    source: data.product ? "product" : "website",
   });
 
   if (error) {
     console.error("[prelaunch_leads] insert failed", error.message);
-    throw new Error("We couldn't save your registration. Please try again.");
+    if (error.code === "23505") {
+      return { ok: true as const, duplicate: true as const };
+    }
+    throw new Error(supabaseErrorMessage(error));
   }
 
-  return { ok: true as const, discountCode };
+  return { ok: true as const, duplicate: false as const, discountCode };
+}
+
+export async function getCustomerLeads(): Promise<CustomerLead[]> {
+  const { data, error } = await supabaseAdmin
+    .from("prelaunch_leads")
+    .select("id, full_name, email, mobile, products, product_details, source, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[prelaunch_leads] fetch failed", error.message);
+    throw new Error(supabaseErrorMessage(error));
+  }
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    fullName: row.full_name,
+    email: row.email,
+    mobile: row.mobile,
+    products: row.products ?? [],
+    productDetails: parseProductDetails(row.product_details),
+    source: row.source,
+    createdAt: row.created_at,
+  }));
+}
+
+export async function isLeadsTableReady() {
+  const { error } = await supabaseAdmin.from("prelaunch_leads").select("id").limit(1);
+  return !error;
 }

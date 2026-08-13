@@ -38,3 +38,23 @@ Find it under **Project Settings → API → service_role**.
 
 - Public (`anon`) can **SELECT** only
 - Admin create/update/delete uses **service_role** via Next.js API routes
+
+## Customer leads (`prelaunch_leads`)
+
+Reserve Interest form submissions are stored in Supabase.
+
+1. Add your database password to `.env.local`:
+
+```env
+SUPABASE_DB_PASSWORD=your_database_password
+```
+
+Find it under **Project Settings → Database → Database password**.
+
+2. Run:
+
+```bash
+npm run db:setup-leads
+```
+
+Or paste `supabase/migrations/20260813120000_prelaunch_leads_setup.sql` into the Supabase **SQL Editor** and run it manually.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { AppProviders } from "@/components/site/AppProviders";
+import { SiteFonts } from "@/components/site/SiteFonts";
 import { getCatalog } from "@/lib/catalog.server";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/logo.png", type: "image/png" }],
   },
   openGraph: {
     siteName: SITE_NAME,
@@ -50,18 +52,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
+      <SiteFonts>
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <AppProviders catalog={catalog}>{children}</AppProviders>
-      </body>
+      </SiteFonts>
     </html>
   );
 }

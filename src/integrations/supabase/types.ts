@@ -118,6 +118,7 @@ export type Database = {
           mobile: string;
           preferred_color: string | null;
           preferred_size: string | null;
+          product_details: Json | null;
           products: string[];
           quantity: number;
           source: string | null;
@@ -134,6 +135,7 @@ export type Database = {
           mobile: string;
           preferred_color?: string | null;
           preferred_size?: string | null;
+          product_details?: Json | null;
           products?: string[];
           quantity?: number;
           source?: string | null;
@@ -150,10 +152,29 @@ export type Database = {
           mobile?: string;
           preferred_color?: string | null;
           preferred_size?: string | null;
+          product_details?: Json | null;
           products?: string[];
           quantity?: number;
           source?: string | null;
           whatsapp_optin?: boolean;
+        };
+        Relationships: [];
+      };
+      early_access_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          created_at?: string;
         };
         Relationships: [];
       };

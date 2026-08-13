@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useReservation } from "@/components/site/SiteShell";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/catalog-types";
+import { cn } from "@/lib/utils";
+import { colorSwatchClass, colorToImageIndex } from "@/lib/product-colors";
 
 export function ProductDetail({ product }: { product: Product }) {
-  const images = product.images ?? [product.image];
+  const images = product.images?.length ? product.images : [product.image];
   const [index, setIndex] = useState(0);
   const { openReservation } = useReservation();
+
+  const activeColor = useMemo(() => {
+    const matched = product.colors.find(
+      (color) => colorToImageIndex(color, product.colors, images) === index,
+    );
+    return matched ?? product.colors[index] ?? product.colors[0] ?? "";
+  }, [index, images, product.colors]);
+
+  const selectColor = (color: string) => {
+    setIndex(colorToImageIndex(color, product.colors, images));
+  };
+
   const go = (dir: number) => setIndex((i) => (i + dir + images.length) % images.length);
 
   return (
@@ -19,11 +33,12 @@ export function ProductDetail({ product }: { product: Product }) {
       <div>
         <div className="relative overflow-hidden rounded-3xl bg-muted">
           <img
+            key={images[index]}
             src={images[index]}
-            alt={`${product.name} — ${product.colors[index] ?? product.fabric}`}
+            alt={`${product.name} — ${activeColor}`}
             width={1120}
             height={1400}
-            className="aspect-[4/5] w-full object-cover object-top"
+            className="aspect-[4/5] w-full object-cover object-top transition-opacity duration-300"
           />
           {images.length > 1 ? (
             <>
@@ -53,13 +68,13 @@ export function ProductDetail({ product }: { product: Product }) {
                 key={src}
                 type="button"
                 onClick={() => setIndex(i)}
-                className={`overflow-hidden rounded-xl border ${
-                  i === index ? "border-foreground" : "border-transparent"
+                className={`overflow-hidden rounded-xl border-2 transition-colors ${
+                  i === index ? "border-foreground" : "border-transparent hover:border-border"
                 }`}
               >
                 <img
                   src={src}
-                  alt={`${product.name} colour ${product.colors[i] ?? i + 1}`}
+                  alt={`${product.name} view ${i + 1}`}
                   className="aspect-square w-full object-cover object-top"
                 />
               </button>
@@ -102,18 +117,56 @@ export function ProductDetail({ product }: { product: Product }) {
           ))}
         </ul>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <div className="mt-8 space-y-6">
           <div>
             <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
               Colours
             </p>
-            <p className="mt-2 text-sm">{product.colors.join(" · ")}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {product.colors.map((color) => {
+                const selected = color === activeColor;
+                return (
+                  <button
+                    key={color}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => selectColor(color)}
+                    className={cn(
+                      "inline-flex items-center gap-2.5 rounded-full border px-4 py-2 text-sm transition-colors",
+                      selected
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border bg-background hover:border-foreground",
+                    )}
+                  >
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "size-4 shrink-0 rounded-full",
+                        colorSwatchClass(color),
+                        selected ? "ring-2 ring-background/80" : "",
+                      )}
+                    />
+                    {color}
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
           <div>
             <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
               Sizes
             </p>
-            <p className="mt-2 text-sm">{product.sizes.join(" · ")}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {product.sizes.map((size) => (
+                <span
+                  key={size}
+                  className="inline-flex h-10 min-w-10 items-center justify-center rounded-full border border-border px-3 text-sm"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 

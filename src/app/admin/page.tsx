@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { getAdminSession } from "@/lib/admin-auth.server";
 import { getCatalog } from "@/lib/catalog.server";
+import { getEarlyAccessSubscribers } from "@/lib/early-access-service";
+import { getCustomerLeads } from "@/lib/leads";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
@@ -18,6 +20,18 @@ export default async function AdminDashboardPage() {
   if (!session) redirect("/admin/login");
 
   const catalog = await getCatalog();
+  let customerCount = 0;
+  let earlyAccessCount = 0;
+  try {
+    const [customers, subscribers] = await Promise.all([
+      getCustomerLeads(),
+      getEarlyAccessSubscribers(),
+    ]);
+    customerCount = customers.length;
+    earlyAccessCount = subscribers.length;
+  } catch {
+    /* dashboard still renders if leads fetch fails */
+  }
 
   return (
     <AdminShell username={session.username}>
@@ -26,7 +40,20 @@ export default async function AdminDashboardPage() {
         Manage storefront products and discover collections.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-3xl border border-border bg-white p-6">
+          <p className="text-sm text-muted-foreground">Reserve Interest</p>
+          <p className="mt-2 font-display text-4xl font-bold">{customerCount}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {earlyAccessCount} early access emails
+          </p>
+          <Link
+            href="/admin/customers"
+            className="mt-4 inline-block text-sm font-semibold text-teal"
+          >
+            View customers →
+          </Link>
+        </div>
         <div className="rounded-3xl border border-border bg-white p-6">
           <p className="text-sm text-muted-foreground">Products</p>
           <p className="mt-2 font-display text-4xl font-bold">{catalog.products.length}</p>
