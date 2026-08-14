@@ -2,16 +2,23 @@ import Link from "next/link";
 
 import { ProductGrid } from "@/components/site/ProductGrid";
 import { getProducts } from "@/lib/catalog.server";
-import { JsonLd, breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { JsonLd, breadcrumbJsonLd, buildPageMetadata, itemListJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = buildPageMetadata({
-  title: "Collection",
+  title: "Shop Premium Cotton Tees — 240–300 GSM Collection",
   description:
-    "Browse AB Collection's first drop: oversized tees, regular fit, French terry, sun-faded and acid-wash styles in heavyweight cotton.",
+    "Browse AB Collection's first drop: oversized tees, regular fit, French terry, sun-faded and acid-wash styles in heavyweight 240–300 GSM cotton. Reserve 10% launch discount.",
   path: "/collection",
   image: "/images/oversized-lavender.png",
+  keywords: [
+    "premium cotton tees India",
+    "oversized t-shirt 240 GSM",
+    "French terry oversized",
+    "sun faded tee",
+    "acid wash t-shirt",
+  ],
 });
 
 export default async function CollectionPage() {
@@ -20,10 +27,13 @@ export default async function CollectionPage() {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Collection", path: "/collection" },
-        ])}
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Collection", path: "/collection" },
+          ]),
+          itemListJsonLd(products),
+        ]}
       />
 
       <section className="px-5 pt-14 pb-8 sm:px-8">

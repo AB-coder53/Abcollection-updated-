@@ -5,11 +5,17 @@ import { Reveal } from "@/components/Reveal";
 import { JsonLd, breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
-  title: "About",
+  title: "About AB Collection — Premium Men's Essentials",
   description:
-    "AB Collection is a premium everyday essentials brand for men — heavyweight cotton, honest pricing, and timeless design. Founded by Abbas Badwahwala.",
+    "AB Collection is a premium everyday essentials brand for men — heavyweight 240–300 GSM cotton, honest pricing, and timeless design. Founded by Abbas Badwahwala in India.",
   path: "/about",
   image: "/images/fabric.jpg",
+  keywords: [
+    "AB Collection about",
+    "premium menswear India",
+    "Abbas Badwahwala",
+    "cotton tee brand",
+  ],
 });
 
 export default function AboutPage() {

@@ -73,3 +73,40 @@ export async function isEarlyAccessTableReady() {
   const { error } = await supabaseAdmin.from("early_access_subscribers").select("id").limit(1);
   return !error;
 }
+
+export async function createEarlyAccessSubscriber(email: string): Promise<EarlyAccessSubscriber> {
+  const normalized = email.trim().toLowerCase();
+  const { data, error } = await supabaseAdmin
+    .from("early_access_subscribers")
+    .insert({ email: normalized })
+    .select("id, email, created_at")
+    .single();
+
+  if (error) {
+    if (error.code === "23505") throw new Error("This email is already on the early access list.");
+    throw new Error("Could not add subscriber.");
+  }
+
+  return { id: data.id, email: data.email, createdAt: data.created_at };
+}
+
+export async function updateEarlyAccessSubscriber(
+  id: string,
+  email: string,
+): Promise<EarlyAccessSubscriber> {
+  const normalized = email.trim().toLowerCase();
+  const { data, error } = await supabaseAdmin
+    .from("early_access_subscribers")
+    .update({ email: normalized })
+    .eq("id", id)
+    .select("id, email, created_at")
+    .single();
+
+  if (error) throw new Error("Could not update subscriber.");
+  return { id: data.id, email: data.email, createdAt: data.created_at };
+}
+
+export async function deleteEarlyAccessSubscriber(id: string) {
+  const { error } = await supabaseAdmin.from("early_access_subscribers").delete().eq("id", id);
+  if (error) throw new Error("Could not delete subscriber.");
+}

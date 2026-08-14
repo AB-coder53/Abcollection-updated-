@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductDetail } from "@/app/collection/[id]/ProductDetail";
 import { getAllProductIds, getProductById } from "@/lib/catalog.server";
 import { JsonLd, breadcrumbJsonLd, buildPageMetadata, productJsonLd } from "@/lib/seo";
+import { SITE_NAME } from "@/lib/site";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -20,10 +21,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return {};
 
   return buildPageMetadata({
-    title: product.name,
-    description: `${product.description} Available in ${product.colors.join(", ")}. From ${product.price}.`,
+    title: `${product.name} — ${product.fabric}`,
+    description: `${product.description} Available in ${product.colors.join(", ")}. Sizes ${product.sizes.join(", ")}. From ${product.price}. Reserve interest for 10% launch discount.`,
     path: `/collection/${product.id}`,
     image: product.image,
+    keywords: [
+      product.name,
+      product.fabric,
+      ...product.colors,
+      "premium cotton tee India",
+      SITE_NAME,
+    ],
   });
 }
 

@@ -10,11 +10,18 @@ import { JsonLd, breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 export const metadata = buildPageMetadata({
-  title: "Premium Everyday Essentials, Launching Soon",
+  title: "Premium Cotton T-Shirts for Men — Pre-Launch",
   description:
-    "Register your interest in AB Collection's first drop of 240–300 GSM premium cotton tees and reserve an exclusive 10% launch discount. No payment today.",
+    "AB Collection's first drop: 240–300 GSM premium cotton tees for men. Oversized, regular fit, French terry & more. Register interest for 10% launch discount — no payment today.",
   path: "/",
   image: "/images/hero-beige.png",
+  keywords: [
+    "premium cotton t-shirts India",
+    "240 GSM oversized tee",
+    "men's heavyweight t-shirt",
+    "prelaunch tee collection",
+    "AB Collection launch",
+  ],
 });
 
 export default async function HomePage() {

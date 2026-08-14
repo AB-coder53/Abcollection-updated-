@@ -35,7 +35,8 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
   const [touched, setTouched] = useState({ fullName: false, email: false, mobile: false });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<{ orderCode: string; duplicate: boolean } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -46,7 +47,8 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
     setSelectedSize(selection?.size ?? product?.sizes[0] ?? "");
     setTouched({ fullName: false, email: false, mobile: false });
     setError("");
-    setDone(false);
+    setDone(null);
+    setCopied(false);
     setLoading(false);
   }, [open, selection, product]);
 
@@ -94,11 +96,21 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
             : undefined,
         }),
       });
-      const payload = (await response.json()) as { ok?: boolean; error?: string };
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+        orderCode?: string;
+        duplicate?: boolean;
+      };
       if (!response.ok || !payload.ok) {
         throw new Error(payload.error ?? "Submission failed");
       }
-      setDone(true);
+      if (!payload.orderCode) {
+        throw new Error(
+          "Reservation saved but no order code was returned. Please contact support.",
+        );
+      }
+      setDone({ orderCode: payload.orderCode, duplicate: !!payload.duplicate });
     } catch (err) {
       setError(
         err instanceof Error
@@ -133,17 +145,56 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
               <Check className="size-6" strokeWidth={1.5} />
             </div>
             <DialogTitle asChild>
-              <h2 className="mt-6 font-display text-3xl leading-tight">You're on the list.</h2>
+              <h2 className="mt-6 font-display text-3xl leading-tight">Thank you!</h2>
             </DialogTitle>
             <DialogDescription asChild>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Thanks for your interest in AB Collection
-                {product ? ` — ${product.name}` : ""}
-                {selectedColor ? ` in ${selectedColor}` : ""}
-                {selectedSize ? `, size ${selectedSize}` : ""}. We'll reach out before launch with
-                your exclusive 10% discount.
+                {done.duplicate
+                  ? "You're already on our list. Here's your reservation code:"
+                  : "Your interest has been reserved successfully."}
+                {product ? (
+                  <>
+                    {" "}
+                    <span className="font-medium text-foreground">{product.name}</span>
+                    {selectedColor ? ` in ${selectedColor}` : ""}
+                    {selectedSize ? `, size ${selectedSize}` : ""}.
+                  </>
+                ) : (
+                  " We'll reach out before launch."
+                )}
               </p>
             </DialogDescription>
+
+            <div className="mt-6 rounded-2xl border border-border bg-muted/40 px-4 py-5">
+              <p className="text-[0.65rem] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                Your order code
+              </p>
+              <p className="mt-2 font-display text-2xl font-bold tracking-wide text-teal">
+                {done.orderCode}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(done.orderCode);
+                    setCopied(true);
+                    window.setTimeout(() => setCopied(false), 2000);
+                  } catch {
+                    setCopied(false);
+                  }
+                }}
+                className="mt-4 h-10 rounded-full px-5 text-xs tracking-[0.12em] uppercase"
+              >
+                {copied ? "Copied!" : "Copy code"}
+              </Button>
+            </div>
+
+            <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
+              Save this code for your records. We&apos;ll contact you before launch with your
+              exclusive 10% discount.
+            </p>
+
             <Button
               onClick={() => onOpenChange(false)}
               className="mt-8 h-12 w-full rounded-full text-xs tracking-[0.18em] uppercase"
