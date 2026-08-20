@@ -22,6 +22,7 @@ export type Database = {
           sizes: string[];
           price: string;
           badge: string | null;
+          size_chart: string | null;
           featured: boolean;
           sort_order: number;
           created_at: string;
@@ -40,6 +41,7 @@ export type Database = {
           sizes?: string[];
           price: string;
           badge?: string | null;
+          size_chart?: string | null;
           featured?: boolean;
           sort_order?: number;
           created_at?: string;
@@ -58,6 +60,7 @@ export type Database = {
           sizes?: string[];
           price?: string;
           badge?: string | null;
+          size_chart?: string | null;
           featured?: boolean;
           sort_order?: number;
           created_at?: string;

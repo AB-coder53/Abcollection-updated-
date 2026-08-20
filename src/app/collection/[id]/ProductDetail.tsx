@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useReservation } from "@/components/site/SiteShell";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import type { Product } from "@/lib/catalog-types";
 import { colorSwatchClass, colorToImageIndex, indexToColor } from "@/lib/product-colors";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,10 @@ export function ProductDetail({ product }: { product: Product }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState(product.colors[0] ?? "");
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] ?? "");
+  const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const { openReservation } = useReservation();
+
+  const hasSizeChart = Boolean(product.sizeChart?.trim());
 
   const selectColor = (color: string) => {
     setSelectedColor(color);
@@ -169,9 +173,21 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
 
           <div>
-            <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-              Sizes
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+                Sizes
+              </p>
+              {hasSizeChart ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setSizeChartOpen(true)}
+                  className="h-9 rounded-full px-4 text-xs font-semibold tracking-[0.12em] uppercase"
+                >
+                  Size Chart
+                </Button>
+              ) : null}
+            </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.sizes.map((size) => {
                 const selected = size === selectedSize;
@@ -219,6 +235,26 @@ export function ProductDetail({ product }: { product: Product }) {
           </Button>
         </div>
       </div>
+
+      {hasSizeChart ? (
+        <Dialog open={sizeChartOpen} onOpenChange={setSizeChartOpen}>
+          <DialogContent className="flex max-h-[min(90vh,calc(100dvh-2rem))] w-[calc(100vw-2rem)] max-w-lg flex-col gap-0 overflow-hidden p-0 sm:rounded-2xl">
+            <div className="shrink-0 border-b border-border px-5 py-4">
+              <DialogTitle className="font-display text-xl">Size Chart</DialogTitle>
+              <DialogDescription className="sr-only">
+                Size chart for {product.name}
+              </DialogDescription>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+              <img
+                src={product.sizeChart}
+                alt={`${product.name} size chart`}
+                className="mx-auto w-full max-w-full object-contain"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      ) : null}
     </div>
   );
 }

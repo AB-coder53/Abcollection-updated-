@@ -31,6 +31,7 @@ function mapProduct(row: ProductRow): Product {
     sizes: row.sizes ?? [],
     price: row.price,
     badge: row.badge ?? "",
+    sizeChart: row.size_chart ?? "",
     featured: row.featured,
     sortOrder: row.sort_order,
   };
@@ -62,6 +63,7 @@ function toProductInsert(product: Product): ProductInsert {
     sizes: product.sizes,
     price: product.price,
     badge: product.badge || null,
+    size_chart: product.sizeChart?.trim() || null,
     featured: product.featured,
     sort_order: product.sortOrder,
   };
