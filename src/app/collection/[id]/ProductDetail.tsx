@@ -138,9 +138,21 @@ export function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-8 space-y-6">
           <div>
-            <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-              Colours
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+                Colours
+              </p>
+              {hasSizeChart ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setSizeChartOpen(true)}
+                  className="h-9 rounded-full px-4 text-xs font-semibold tracking-[0.12em] uppercase"
+                >
+                  Size Chart
+                </Button>
+              ) : null}
+            </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.colors.map((color) => {
                 const selected = color === selectedColor;
@@ -173,21 +185,9 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
 
           <div>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-                Sizes
-              </p>
-              {hasSizeChart ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setSizeChartOpen(true)}
-                  className="h-9 rounded-full px-4 text-xs font-semibold tracking-[0.12em] uppercase"
-                >
-                  Size Chart
-                </Button>
-              ) : null}
-            </div>
+            <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+              Sizes
+            </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.sizes.map((size) => {
                 const selected = size === selectedSize;
