@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { buildPageMetadata } from "@/lib/seo";
 import { WHOLESALE_STORE_URL } from "@/lib/site";
 
@@ -8,16 +10,7 @@ export const metadata = buildPageMetadata({
   noIndex: true,
 });
 
+/** mrch.in sets X-Frame-Options: sameorigin — iframe embed is blocked; redirect instead. */
 export default function WholesalePage() {
-  return (
-    <main className="fixed inset-0 bg-background">
-      <iframe
-        src={WHOLESALE_STORE_URL}
-        title="AB Collection Wholesale — B2B Plain Tshirt Supplier"
-        className="size-full border-0"
-        allow="payment; clipboard-read; clipboard-write"
-        loading="eager"
-      />
-    </main>
-  );
+  redirect(WHOLESALE_STORE_URL);
 }
