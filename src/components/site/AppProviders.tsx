@@ -10,8 +10,9 @@ import type { Catalog } from "@/lib/catalog-types";
 export function AppProviders({ children, catalog }: { children: ReactNode; catalog: Catalog }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isWholesale = pathname === "/wholesale" || pathname?.startsWith("/wholesale/");
 
-  if (isAdmin) return <>{children}</>;
+  if (isAdmin || isWholesale) return <>{children}</>;
 
   return (
     <CatalogProvider initial={catalog}>
