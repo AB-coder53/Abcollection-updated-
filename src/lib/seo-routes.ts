@@ -11,6 +11,7 @@ export const PUBLIC_STATIC_ROUTES: {
   { path: "/about", changeFrequency: "monthly", priority: 0.7 },
   { path: "/faq", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/istefada", changeFrequency: "weekly", priority: 0.85 },
 ];
 
 /** Paths that must never be crawled or indexed. */

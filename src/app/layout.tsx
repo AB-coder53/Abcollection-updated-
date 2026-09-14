@@ -14,7 +14,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const catalog = await getCatalog();
 
   return (
-    <html lang="en-IN">
+    <html lang="en-IN" suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
       </head>

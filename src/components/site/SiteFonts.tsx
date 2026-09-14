@@ -15,5 +15,12 @@ const playfair = Playfair_Display({
 });
 
 export function SiteFonts({ children }: { children: ReactNode }) {
-  return <body className={`${manrope.variable} ${playfair.variable} antialiased`}>{children}</body>;
+  return (
+    <body
+      className={`${manrope.variable} ${playfair.variable} antialiased`}
+      suppressHydrationWarning
+    >
+      {children}
+    </body>
+  );
 }

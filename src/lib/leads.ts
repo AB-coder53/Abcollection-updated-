@@ -8,10 +8,12 @@ export const productInterestSchema = z.object({
   id: z.string().trim().min(1).max(80),
   name: z.string().trim().min(1).max(120),
   price: z.string().trim().min(1).max(40),
+  originalPrice: z.string().trim().max(40).optional(),
   fabric: z.string().trim().min(1).max(120),
   image: z.string().trim().min(1).max(500),
   color: z.string().trim().min(1).max(40).optional(),
   size: z.string().trim().min(1).max(10).optional(),
+  promoCode: z.string().trim().max(40).optional(),
 });
 
 export const interestSchema = z.object({
@@ -21,6 +23,10 @@ export const interestSchema = z.object({
     .string()
     .trim()
     .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
+  city: z.string().trim().max(80).optional(),
+  deliveryNotes: z.string().trim().max(500).optional(),
+  promoCode: z.string().trim().max(40).optional(),
+  source: z.string().trim().max(40).optional(),
   product: productInterestSchema.optional(),
 });
 
@@ -114,18 +120,27 @@ export async function registerInterest(data: InterestInput) {
     };
   }
 
+  const productDetails = data.product
+    ? {
+        ...data.product,
+        promoCode: data.product.promoCode ?? data.promoCode ?? null,
+        deliveryNotes: data.deliveryNotes?.trim() || null,
+      }
+    : null;
+
   const { error } = await supabaseAdmin.from("prelaunch_leads").insert({
     full_name: data.fullName,
     mobile: data.mobile,
     email: data.email,
+    city: data.city?.trim() || null,
     products,
-    product_details: data.product ?? null,
+    product_details: productDetails,
     preferred_color: data.product?.color ?? null,
     preferred_size: data.product?.size ?? null,
     whatsapp_optin: true,
     marketing_consent: true,
     discount_code: orderCode,
-    source: data.product ? "product" : "website",
+    source: data.source ?? (data.product ? "product" : "website"),
   });
 
   if (error) {

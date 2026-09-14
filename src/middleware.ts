@@ -1,6 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { ADMIN_COOKIE_NAME } from "@/lib/admin-constants";
+import {
+  ISTEFADA_OFFER_COOKIE,
+  ISTEFADA_OFFER_MAX_AGE,
+  ISTEFADA_PROMO_CODE,
+} from "@/lib/istefada-offer";
 import { SITE_URL, WHOLESALE_PATH, WHOLESALE_REDIRECT_HOSTS } from "@/lib/site";
 
 const wholesaleHosts = new Set(WHOLESALE_REDIRECT_HOSTS.map((host) => host.toLowerCase()));
@@ -19,6 +24,16 @@ export function middleware(request: NextRequest) {
   if (wholesaleRedirect) return wholesaleRedirect;
 
   const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/istefada")) {
+    const response = NextResponse.next();
+    response.cookies.set(ISTEFADA_OFFER_COOKIE, ISTEFADA_PROMO_CODE, {
+      maxAge: ISTEFADA_OFFER_MAX_AGE,
+      path: "/",
+      sameSite: "lax",
+    });
+    return response;
+  }
 
   if (!pathname.startsWith("/admin")) return NextResponse.next();
   if (pathname === "/admin/login") return NextResponse.next();

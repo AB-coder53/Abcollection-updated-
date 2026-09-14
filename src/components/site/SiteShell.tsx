@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 
 import { EarlyAccessOverlay } from "@/components/EarlyAccessOverlay";
+import { IstefadaOfferBanner } from "@/components/site/IstefadaOfferBanner";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import type { Product } from "@/lib/catalog-types";
@@ -72,6 +73,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <div className="min-h-screen bg-background text-foreground">
         <EarlyAccessOverlay forceOpen={earlyAccessOpen} onClose={() => setEarlyAccessOpen(false)} />
         <SiteHeader />
+        <IstefadaOfferBanner />
         <main>{children}</main>
         <SiteFooter />
         {registerOpen ? (

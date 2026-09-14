@@ -7,6 +7,12 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useIstefadaOffer } from "@/hooks/use-istefada-offer";
+import {
+  ISTEFADA_PROMO_CODE,
+  ISTEFADA_SOURCE,
+  getDiscountedPriceLabel,
+} from "@/lib/istefada-offer";
 import { colorSwatchClass, colorToImageIndex } from "@/lib/product-colors";
 import type { ReservationSelection } from "@/lib/reservation-types";
 import { cn } from "@/lib/utils";
@@ -24,8 +30,10 @@ const fieldClass =
   "mt-2 h-12 rounded-xl border border-border bg-muted/40 px-4 text-base shadow-none transition-colors focus-visible:border-foreground focus-visible:bg-background focus-visible:ring-0";
 
 export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) {
+  const { hasOffer, discountInr, promoCode } = useIstefadaOffer();
   const product = selection?.product ?? null;
   const images = product?.images?.length ? product.images : product ? [product.image] : [];
+  const pricing = product && hasOffer ? getDiscountedPriceLabel(product.price) : null;
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -83,15 +91,19 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
           fullName: fullName.trim(),
           email: email.trim().toLowerCase(),
           mobile: mobile.trim(),
+          promoCode: hasOffer ? promoCode : undefined,
+          source: hasOffer ? ISTEFADA_SOURCE : undefined,
           product: product
             ? {
                 id: product.id,
                 name: product.name,
-                price: product.price,
+                price: pricing?.finalLabel ?? product.price,
+                originalPrice: hasOffer ? pricing?.originalLabel : undefined,
                 fabric: product.fabric,
                 image: previewImage,
                 color: selectedColor,
                 size: selectedSize,
+                promoCode: hasOffer ? ISTEFADA_PROMO_CODE : undefined,
               }
             : undefined,
         }),
@@ -229,7 +241,19 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
                   />
                   <div className="min-w-0">
                     <p className="font-medium leading-snug">{product.name}</p>
-                    <p className="mt-1 text-sm text-teal">{product.price}</p>
+                    {hasOffer && pricing?.final != null ? (
+                      <div className="mt-1 flex flex-wrap items-baseline gap-2">
+                        <p className="text-sm font-semibold text-teal">{pricing.finalLabel}</p>
+                        <p className="text-xs text-muted-foreground line-through">
+                          {pricing.originalLabel}
+                        </p>
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-teal">
+                          ₹{discountInr} off • {promoCode}
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="mt-1 text-sm text-teal">{product.price}</p>
+                    )}
                     <p className="mt-1 text-xs text-muted-foreground">{product.fabric}</p>
                   </div>
                 </div>
