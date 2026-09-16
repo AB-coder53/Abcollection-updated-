@@ -1,11 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { ADMIN_COOKIE_NAME } from "@/lib/admin-constants";
-import {
-  ISTEFADA_OFFER_COOKIE,
-  ISTEFADA_OFFER_MAX_AGE,
-  ISTEFADA_PROMO_CODE,
-} from "@/lib/istefada-offer";
+import { ISTEFADA_OFFER_COOKIE } from "@/lib/istefada-offer";
 import { SITE_URL, WHOLESALE_PATH, WHOLESALE_REDIRECT_HOSTS } from "@/lib/site";
 
 const wholesaleHosts = new Set(WHOLESALE_REDIRECT_HOSTS.map((host) => host.toLowerCase()));
@@ -25,17 +21,13 @@ export function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/istefada")) {
+  if (!pathname.startsWith("/admin")) {
     const response = NextResponse.next();
-    response.cookies.set(ISTEFADA_OFFER_COOKIE, ISTEFADA_PROMO_CODE, {
-      maxAge: ISTEFADA_OFFER_MAX_AGE,
-      path: "/",
-      sameSite: "lax",
-    });
+    if (request.cookies.get(ISTEFADA_OFFER_COOKIE)) {
+      response.cookies.set(ISTEFADA_OFFER_COOKIE, "", { maxAge: 0, path: "/" });
+    }
     return response;
   }
-
-  if (!pathname.startsWith("/admin")) return NextResponse.next();
   if (pathname === "/admin/login") return NextResponse.next();
 
   const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;

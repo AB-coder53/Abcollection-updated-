@@ -4,6 +4,10 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
 import { CatalogProvider } from "@/components/site/CatalogProvider";
+import {
+  IstefadaOfferActivation,
+  IstefadaOfferProvider,
+} from "@/components/site/IstefadaOfferProvider";
 import { SiteShell } from "@/components/site/SiteShell";
 import type { Catalog } from "@/lib/catalog-types";
 
@@ -15,8 +19,11 @@ export function AppProviders({ children, catalog }: { children: ReactNode; catal
   if (isAdmin || isCampaignLanding) return <>{children}</>;
 
   return (
-    <CatalogProvider initial={catalog}>
-      <SiteShell>{children}</SiteShell>
-    </CatalogProvider>
+    <IstefadaOfferProvider>
+      <IstefadaOfferActivation />
+      <CatalogProvider initial={catalog}>
+        <SiteShell>{children}</SiteShell>
+      </CatalogProvider>
+    </IstefadaOfferProvider>
   );
 }

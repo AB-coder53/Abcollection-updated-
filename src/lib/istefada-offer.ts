@@ -1,10 +1,12 @@
 import { parsePriceInr } from "@/lib/seo";
 
+/** Legacy cookie name — cleared by middleware; offer is no longer cookie-based. */
 export const ISTEFADA_OFFER_COOKIE = "abc_istefada_offer";
 export const ISTEFADA_PROMO_CODE = "ISTEFADA100";
 export const ISTEFADA_DISCOUNT_INR = 100;
 export const ISTEFADA_SOURCE = "istefada";
-export const ISTEFADA_OFFER_MAX_AGE = 60 * 60 * 24 * 30;
+/** Query param value: /?from=istefada activates offer for this page load only (lost on refresh). */
+export const ISTEFADA_FROM_QUERY = "istefada";
 
 export function applyIstefadaDiscount(originalPrice: number, discount = ISTEFADA_DISCOUNT_INR) {
   return Math.max(originalPrice - discount, 0);

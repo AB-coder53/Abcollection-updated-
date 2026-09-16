@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 import { FooterCTA } from "@/components/privilege/FooterCTA";
 import { PrivilegeHeader } from "@/components/privilege/Header";
@@ -9,18 +8,13 @@ import { OriginSection } from "@/components/privilege/OriginSection";
 import { RewardSection } from "@/components/privilege/RewardSection";
 import { SocialProofSection } from "@/components/privilege/SocialProofSection";
 import { StickyBottomNav } from "@/components/privilege/StickyBottomNav";
-import { setIstefadaOfferCookie } from "@/hooks/use-istefada-offer";
+import { ISTEFADA_FROM_QUERY } from "@/lib/istefada-offer";
 
 export function PrivilegeLanding() {
   const router = useRouter();
 
-  useEffect(() => {
-    setIstefadaOfferCookie();
-  }, []);
-
   const goToShop = () => {
-    setIstefadaOfferCookie();
-    router.push("/");
+    router.push(`/?from=${ISTEFADA_FROM_QUERY}`);
   };
 
   return (
