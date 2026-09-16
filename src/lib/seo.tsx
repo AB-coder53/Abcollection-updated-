@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 
 import type { Product } from "@/lib/catalog-types";
-import {
-  SITE_EMAIL,
-  SITE_INSTAGRAM,
-  SITE_LOCALE,
-  SITE_NAME,
-  SITE_TAGLINE,
-  SITE_URL,
-} from "@/lib/site";
+import { CANONICAL_SITE_ORIGIN, canonicalUrl } from "@/lib/canonical-url";
+import { SITE_EMAIL, SITE_INSTAGRAM, SITE_LOCALE, SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
 const DEFAULT_KEYWORDS = [
   "AB Collection",
@@ -34,8 +28,7 @@ type PageSeoInput = {
 };
 
 export function absoluteUrl(path = "/") {
-  if (path.startsWith("http")) return path;
-  return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  return canonicalUrl(path);
 }
 
 export function parsePriceInr(price: string): number | null {
@@ -61,7 +54,7 @@ export function buildPageMetadata({
     title,
     description,
     keywords: keywords ?? [...DEFAULT_KEYWORDS],
-    authors: [{ name: "Abbas Badwahwala", url: SITE_URL }],
+    authors: [{ name: "Abbas Badwahwala", url: CANONICAL_SITE_ORIGIN }],
     creator: SITE_NAME,
     publisher: SITE_NAME,
     category: "Fashion",
@@ -109,7 +102,7 @@ export function buildRootMetadata(): Metadata {
   const googleVerification = process.env["GOOGLE_SITE_VERIFICATION"];
 
   return {
-    metadataBase: new URL(SITE_URL),
+    metadataBase: new URL(CANONICAL_SITE_ORIGIN),
     title: {
       default: `${SITE_NAME} — ${SITE_TAGLINE}`,
       template: `%s · ${SITE_NAME}`,
@@ -117,7 +110,7 @@ export function buildRootMetadata(): Metadata {
     description:
       "Premium everyday essentials for men. Heavyweight 240–300 GSM cotton tees with timeless design and honest pricing. Reserve your 10% launch discount — no payment today.",
     applicationName: SITE_NAME,
-    authors: [{ name: "Abbas Badwahwala", url: SITE_URL }],
+    authors: [{ name: "Abbas Badwahwala", url: CANONICAL_SITE_ORIGIN }],
     creator: SITE_NAME,
     publisher: SITE_NAME,
     category: "Fashion",
@@ -138,7 +131,7 @@ export function buildRootMetadata(): Metadata {
       title: `${SITE_NAME} — ${SITE_TAGLINE}`,
       description:
         "Premium heavyweight cotton tees for men. Register interest before launch for 10% off.",
-      url: SITE_URL,
+      url: CANONICAL_SITE_ORIGIN,
       images: [{ url: absoluteUrl("/images/hero-beige.png"), width: 1200, height: 1600 }],
     },
     twitter: {
@@ -167,7 +160,7 @@ export function organizationJsonLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
-    url: SITE_URL,
+    url: CANONICAL_SITE_ORIGIN,
     description: `${SITE_NAME} — ${SITE_TAGLINE}. Premium everyday essentials for men.`,
     email: SITE_EMAIL,
     sameAs: [SITE_INSTAGRAM],
@@ -184,12 +177,12 @@ export function websiteJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
-    url: SITE_URL,
+    url: CANONICAL_SITE_ORIGIN,
     description: `${SITE_TAGLINE}. Heavyweight cotton tees launching soon.`,
     publisher: { "@type": "Organization", name: SITE_NAME },
     potentialAction: {
       "@type": "SearchAction",
-      target: `${SITE_URL}/collection?q={search_term_string}`,
+      target: `${CANONICAL_SITE_ORIGIN}/collection?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };

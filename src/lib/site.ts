@@ -1,7 +1,13 @@
+import { CANONICAL_SITE_ORIGIN } from "@/lib/canonical-url";
+
 export const SITE_NAME = "AB Collection";
 export const SITE_TAGLINE = "Premium Everyday Essentials";
-export const SITE_URL =
-  process.env["NEXT_PUBLIC_SITE_URL"]?.replace(/\/$/, "") || "https://abcollection.co.in";
+
+/** Canonical production URL — always www.abcollection.co.in for SEO. */
+export const PRODUCTION_SITE_URL = CANONICAL_SITE_ORIGIN;
+
+/** Runtime site URL (middleware/redirects). SEO uses canonicalUrl() instead. */
+export const SITE_URL = PRODUCTION_SITE_URL;
 export const WHOLESALE_STORE_URL =
   process.env["NEXT_PUBLIC_WHOLESALE_URL"]?.replace(/\/$/, "") || "https://abcollection.mrch.in";
 export const WHOLESALE_PATH = "/wholesale";
