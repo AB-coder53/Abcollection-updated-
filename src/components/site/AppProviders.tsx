@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
+import { AnalyticsTracker } from "@/components/site/AnalyticsTracker";
 import { CatalogProvider } from "@/components/site/CatalogProvider";
 import {
   IstefadaOfferActivation,
@@ -16,10 +17,20 @@ export function AppProviders({ children, catalog }: { children: ReactNode; catal
   const isAdmin = pathname?.startsWith("/admin");
   const isCampaignLanding = pathname?.startsWith("/istefada") || pathname?.startsWith("/privilege");
 
-  if (isAdmin || isCampaignLanding) return <>{children}</>;
+  if (isAdmin) return <>{children}</>;
+
+  if (isCampaignLanding) {
+    return (
+      <>
+        <AnalyticsTracker />
+        {children}
+      </>
+    );
+  }
 
   return (
     <IstefadaOfferProvider>
+      <AnalyticsTracker />
       <IstefadaOfferActivation />
       <CatalogProvider initial={catalog}>
         <SiteShell>{children}</SiteShell>

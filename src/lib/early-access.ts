@@ -42,4 +42,16 @@ export function trackEvent(name: string, params: Record<string, unknown> = {}) {
   const w = window as AnalyticsWindow;
   if (typeof w.gtag === "function") w.gtag("event", name, params);
   else if (Array.isArray(w.dataLayer)) w.dataLayer.push({ event: name, ...params });
+
+  import("@/lib/analytics.client")
+    .then(({ trackClick }) => {
+      trackClick(
+        window.location.pathname,
+        name,
+        typeof params["path"] === "string" ? params["path"] : undefined,
+      );
+    })
+    .catch(() => {
+      /* analytics optional */
+    });
 }

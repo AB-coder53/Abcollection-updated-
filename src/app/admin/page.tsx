@@ -5,6 +5,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { getAdminSession } from "@/lib/admin-auth.server";
 import { getCatalog } from "@/lib/catalog.server";
 import { getEarlyAccessSubscribers } from "@/lib/early-access-service";
+import { getAnalyticsSummary, isAnalyticsTableReady } from "@/lib/analytics.server";
 import { getCustomerLeads } from "@/lib/leads";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -22,6 +23,8 @@ export default async function AdminDashboardPage() {
   const catalog = await getCatalog();
   let customerCount = 0;
   let earlyAccessCount = 0;
+  let analyticsVisitors = 0;
+  let analyticsPageViews = 0;
   try {
     const [customers, subscribers] = await Promise.all([
       getCustomerLeads(),
@@ -33,6 +36,16 @@ export default async function AdminDashboardPage() {
     /* dashboard still renders if leads fetch fails */
   }
 
+  try {
+    if (await isAnalyticsTableReady()) {
+      const analytics = await getAnalyticsSummary(7);
+      analyticsVisitors = analytics.uniqueVisitors;
+      analyticsPageViews = analytics.pageViews;
+    }
+  } catch {
+    /* analytics optional on dashboard */
+  }
+
   return (
     <AdminShell username={session.username}>
       <h1 className="font-display text-3xl font-bold">Dashboard</h1>
@@ -40,7 +53,18 @@ export default async function AdminDashboardPage() {
         Manage storefront products and discover collections.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-3xl border border-border bg-white p-6">
+          <p className="text-sm text-muted-foreground">Visitors (7 days)</p>
+          <p className="mt-2 font-display text-4xl font-bold">{analyticsVisitors}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{analyticsPageViews} page views</p>
+          <Link
+            href="/admin/analytics"
+            className="mt-4 inline-block text-sm font-semibold text-teal"
+          >
+            View analytics →
+          </Link>
+        </div>
         <div className="rounded-3xl border border-border bg-white p-6">
           <p className="text-sm text-muted-foreground">Reserve Interest</p>
           <p className="mt-2 font-display text-4xl font-bold">{customerCount}</p>
