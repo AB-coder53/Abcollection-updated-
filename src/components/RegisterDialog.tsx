@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Loader2, X } from "lucide-react";
 
@@ -590,7 +591,20 @@ export function RegisterDialog({ open, onOpenChange, product }: Props) {
                           className="mt-0.5 rounded-none"
                         />
                         <span className="leading-relaxed text-muted-foreground">
-                          I agree to the Terms &amp; Privacy Policy
+                          I agree to the{" "}
+                          <Link
+                            href="/terms"
+                            className="text-foreground underline-offset-4 hover:underline"
+                          >
+                            Terms
+                          </Link>{" "}
+                          &amp;{" "}
+                          <Link
+                            href="/privacy"
+                            className="text-foreground underline-offset-4 hover:underline"
+                          >
+                            Privacy Policy
+                          </Link>
                         </span>
                       </label>
                       {termsError ? (

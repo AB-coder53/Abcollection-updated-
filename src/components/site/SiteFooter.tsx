@@ -8,6 +8,7 @@ import { useReservation } from "@/components/site/SiteShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trackEvent } from "@/lib/early-access";
+import { LEGAL_NAV_LINKS } from "@/lib/legal/content";
 import { NAV_LINKS, SITE_EMAIL, SITE_INSTAGRAM } from "@/lib/site";
 
 export function SiteFooter() {
@@ -81,6 +82,21 @@ export function SiteFooter() {
           >
             <Instagram className="size-3.5" /> Instagram
           </a>
+        </nav>
+
+        <nav
+          className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground"
+          aria-label="Legal"
+        >
+          {LEGAL_NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="transition-colors hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <p className="mt-10 text-xs tracking-[0.12em] text-muted-foreground uppercase">
