@@ -21,6 +21,8 @@ export const productSchema = z.object({
   sizeChart: z.string().trim().max(500).optional().or(z.literal("")),
   featured: z.boolean().default(true),
   sortOrder: z.number().int().min(0).max(9999).default(0),
+  /** When set, orders reduce this count. Omit or null = unlimited inventory. */
+  stockCount: z.number().int().min(0).max(999_999).nullable().optional(),
 });
 
 export const collectionSchema = z.object({

@@ -16,7 +16,8 @@ export function ProductsTable({ products }: { products: Product[] }) {
           <tr>
             <th className="px-4 py-3 font-semibold">Product</th>
             <th className="hidden px-4 py-3 font-semibold sm:table-cell">Price</th>
-            <th className="hidden px-4 py-3 font-semibold md:table-cell">Featured</th>
+            <th className="hidden px-4 py-3 font-semibold md:table-cell">Stock</th>
+            <th className="hidden px-4 py-3 font-semibold lg:table-cell">Featured</th>
             <th className="px-4 py-3 font-semibold">Actions</th>
           </tr>
         </thead>
@@ -37,7 +38,10 @@ export function ProductsTable({ products }: { products: Product[] }) {
                 </div>
               </td>
               <td className="hidden px-4 py-3 sm:table-cell">{product.price}</td>
-              <td className="hidden px-4 py-3 md:table-cell">{product.featured ? "Yes" : "No"}</td>
+              <td className="hidden px-4 py-3 md:table-cell">
+                {product.stockCount == null ? "—" : product.stockCount}
+              </td>
+              <td className="hidden px-4 py-3 lg:table-cell">{product.featured ? "Yes" : "No"}</td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-2">
                   <Link

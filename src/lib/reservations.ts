@@ -7,6 +7,11 @@ import { getProducts } from "@/lib/catalog.server";
 import { PRODUCT_SPECS } from "@/lib/product-specs";
 import { makeReservationId, normalizeMobile } from "@/lib/reservation-utils";
 import { appendValues, getValues } from "@/lib/sheets.server";
+import {
+  InsufficientStockError,
+  assertProductInStock,
+  decrementProductStock,
+} from "@/lib/stock.server";
 
 const itemSchema = z.object({
   productName: z.string().trim().min(1).max(80),
@@ -45,12 +50,17 @@ export async function createReservation(
     if (!product.sizes.includes(item.size)) throw new Error("Unavailable size selected");
     if (!product.colors.includes(item.colour)) throw new Error("Unavailable colour selected");
     return {
+      productId: product.id,
       name: product.name,
       spec: PRODUCT_SPECS[product.name] ?? product.fabric,
       size: item.size,
       colour: item.colour,
     };
   });
+
+  for (const item of items) {
+    await assertProductInStock(item.productId, 1);
+  }
 
   const existing = await getValues("Reservations!A2:D");
   const match = existing.find((row) => normalizeMobile(row[3] ?? "") === mobile);
@@ -83,5 +93,11 @@ export async function createReservation(
     ],
   ]);
 
+  for (const item of items) {
+    await decrementProductStock(item.productId, 1);
+  }
+
   return { status: "created", reservationId };
 }
+
+export { InsufficientStockError };

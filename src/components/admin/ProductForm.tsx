@@ -25,6 +25,7 @@ const emptyProduct = (): Product => ({
   sizeChart: "",
   featured: true,
   sortOrder: 0,
+  stockCount: null,
 });
 
 export function ProductForm({ mode, initial }: { mode: "create" | "edit"; initial?: Product }) {
@@ -47,6 +48,10 @@ export function ProductForm({ mode, initial }: { mode: "create" | "edit"; initia
         image: form.image || form.images[0] || "",
         badge: form.badge || "",
         sizeChart: form.sizeChart || "",
+        stockCount:
+          form.stockCount === null || form.stockCount === undefined
+            ? null
+            : Math.max(0, Math.floor(form.stockCount)),
       };
       const res = await fetch(
         mode === "create" ? "/api/admin/products" : `/api/admin/products/${form.id}`,
@@ -99,6 +104,21 @@ export function ProductForm({ mode, initial }: { mode: "create" | "edit"; initia
           type="number"
           value={String(form.sortOrder)}
           onChange={(v) => set("sortOrder", Number(v) || 0)}
+        />
+        <Field
+          label="Stock count"
+          type="number"
+          value={
+            form.stockCount === null || form.stockCount === undefined ? "" : String(form.stockCount)
+          }
+          onChange={(v) => {
+            if (!v.trim()) {
+              set("stockCount", null);
+              return;
+            }
+            set("stockCount", Math.max(0, Number(v) || 0));
+          }}
+          placeholder="Leave empty for unlimited"
         />
         <label className="flex items-center gap-3 pt-7 text-sm">
           <input

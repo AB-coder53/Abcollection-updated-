@@ -30,6 +30,12 @@ export function mapCatalogProductToPrivilege(product: Product): PrivilegeProduct
   const defaultSize = sizes.includes("L") ? "L" : (sizes[0] ?? "M");
 
   const badge = product.badge?.trim();
+  const stockLabel =
+    product.stockCount != null
+      ? product.stockCount <= 0
+        ? "SOLD OUT"
+        : `${product.stockCount} IN STOCK`
+      : null;
 
   return {
     id: product.id,
@@ -41,7 +47,8 @@ export function mapCatalogProductToPrivilege(product: Product): PrivilegeProduct
     price: discountedPrice,
     originalPrice,
     gsm: product.fabric.toUpperCase(),
-    tag: badge || "IN STOCK",
+    tag: stockLabel ?? badge ?? "IN STOCK",
+    tagType: product.stockCount != null && product.stockCount <= 0 ? "drop" : "stock",
     ...(badge ? { badge } : {}),
     image: imageForColor(product, defaultColor),
     sizes,

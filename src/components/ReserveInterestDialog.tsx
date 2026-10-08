@@ -15,6 +15,7 @@ import {
 } from "@/lib/istefada-offer";
 import { colorSwatchClass, colorToImageIndex } from "@/lib/product-colors";
 import type { ReservationSelection } from "@/lib/reservation-types";
+import { useCatalog } from "@/components/site/CatalogProvider";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -30,6 +31,7 @@ const fieldClass =
   "mt-2 h-12 rounded-xl border border-border bg-muted/40 px-4 text-base shadow-none transition-colors focus-visible:border-foreground focus-visible:bg-background focus-visible:ring-0";
 
 export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) {
+  const { refresh: refreshCatalog } = useCatalog();
   const { hasOffer, discountInr, promoCode } = useIstefadaOffer();
   const product = selection?.product ?? null;
   const images = product?.images?.length ? product.images : product ? [product.image] : [];
@@ -123,6 +125,9 @@ export function ReserveInterestDialog({ open, onOpenChange, selection }: Props) 
         );
       }
       setDone({ orderCode: payload.orderCode, duplicate: !!payload.duplicate });
+      if (!payload.duplicate) {
+        void refreshCatalog();
+      }
     } catch (err) {
       setError(
         err instanceof Error

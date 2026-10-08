@@ -3,6 +3,11 @@ import "server-only";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import {
+  InsufficientStockError,
+  assertProductInStock,
+  decrementProductStock,
+} from "@/lib/stock.server";
 
 export const productInterestSchema = z.object({
   id: z.string().trim().min(1).max(80),
@@ -91,6 +96,11 @@ function parseProductDetails(value: unknown): ProductInterest | null {
 }
 
 export async function registerInterest(data: InterestInput) {
+  const productId = data.product?.id?.trim();
+  if (productId) {
+    await assertProductInStock(productId, 1);
+  }
+
   const colorLabel = data.product?.color;
   const productLabel = data.product
     ? colorLabel
@@ -161,8 +171,14 @@ export async function registerInterest(data: InterestInput) {
     throw new Error(supabaseErrorMessage(error));
   }
 
+  if (productId) {
+    await decrementProductStock(productId, 1);
+  }
+
   return { ok: true as const, duplicate: false as const, orderCode };
 }
+
+export { InsufficientStockError };
 
 function mapCustomerRow(row: {
   id: string;

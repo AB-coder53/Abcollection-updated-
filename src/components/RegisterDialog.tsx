@@ -50,7 +50,7 @@ const isValidMobile = (value: string) => /^[6-9]\d{9}$/.test(value.trim());
 const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
 export function RegisterDialog({ open, onOpenChange, product }: Props) {
-  const { products: PRODUCTS } = useCatalog();
+  const { products: PRODUCTS, refresh: refreshCatalog } = useCatalog();
   const [draft, setDraft] = useState<Draft>(EMPTY);
   const [touched, setTouched] = useState<{ fullName?: boolean; mobile?: boolean; email?: boolean }>(
     {},
@@ -213,6 +213,7 @@ export function RegisterDialog({ open, onOpenChange, product }: Props) {
         setDuplicate({ reservationId: payload.reservationId });
       } else {
         setDone({ reservationId: payload.reservationId });
+        void refreshCatalog();
       }
     } catch {
       setFormError(

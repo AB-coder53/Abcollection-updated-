@@ -25,6 +25,7 @@ export type Database = {
           size_chart: string | null;
           featured: boolean;
           sort_order: number;
+          stock_count: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -44,6 +45,7 @@ export type Database = {
           size_chart?: string | null;
           featured?: boolean;
           sort_order?: number;
+          stock_count?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -63,6 +65,7 @@ export type Database = {
           size_chart?: string | null;
           featured?: boolean;
           sort_order?: number;
+          stock_count?: number | null;
           created_at?: string;
           updated_at?: string;
         };
